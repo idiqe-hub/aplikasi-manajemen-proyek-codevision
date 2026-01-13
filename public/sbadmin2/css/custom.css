@@ -1,0 +1,14 @@
+/* Sidebar fixed */
+.sidebar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1030;
+}
+
+/* Geser konten ke kanan */
+#content-wrapper {
+    margin-left: 224px; /* lebar default sidebar SB Admin 2 */
+}

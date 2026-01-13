@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@yield('title', 'PKL Codevision')</title>
+
+    {{-- SB Admin 2 CSS --}}
+    <link href="{{ asset('sbadmin2/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('sbadmin2/css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('sbadmin2/css/custom.css') }}" rel="stylesheet">
+
+    <style>
+        /* Sidebar solid */
+        .sidebar-solid {
+            background: #1b3c53 !important;
+            background-image: none !important;
+        }
+
+        /* Link warna */
+        .sidebar-solid .nav-item .nav-link {
+            color: rgba(255, 255, 255, .9) !important;
+        }
+
+        .sidebar-solid .nav-item .nav-link i {
+            color: rgba(255, 255, 255, .8) !important;
+        }
+
+        /* Hover & Active */
+        .sidebar-solid .nav-item .nav-link:hover {
+            color: #fff !important;
+            background: rgba(255, 255, 255, .10);
+        }
+
+        .sidebar-solid .nav-item.active .nav-link {
+            color: #fff !important;
+            background: rgba(0, 0, 0, .18);
+        }
+
+        .sidebar-solid hr.sidebar-divider {
+            border-color: rgba(255, 255, 255, .12);
+        }
+
+        .brand-stack {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 18px 12px !important;
+            height: auto !important;
+            text-decoration: none;
+        }
+
+        .brand-logo {
+            background: #fff;
+            padding: 4px 5px;
+            border-radius: 12px;
+            line-height: 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .18);
+        }
+
+        .brand-logo img {
+            height: 36px;
+            width: auto;
+            display: block;
+        }
+
+        .brand-text {
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .brand-title {
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, .95);
+        }
+
+        .brand-subtitle {
+            margin-top: 4px;
+            font-size: 11px;
+            letter-spacing: .6px;
+            color: rgba(255, 255, 255, .75);
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+
+        {{-- Sidebar --}}
+
+        <ul class="navbar-nav sidebar sidebar-dark accordion sidebar-solid sidebar-fixed" id="accordionSidebar">
+
+
+            <a class="sidebar-brand brand-stack" href="{{ route('dashboard') }}">
+
+                {{-- Logo PKL --}}
+                <div class="brand-logo">
+                    <img src="{{ asset('sbadmin2/img/logo-pkl.png') }}" alt="Logo PKL">
+                </div>
+
+                {{-- Text --}}
+                <div class="brand-text">
+                    <div class="brand-title">CODEVISION</div>
+                </div>
+
+            </a>
+
+
+
+            <hr class="sidebar-divider my-0">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('dashboard') }}">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('tasks.index') }}">
+                    <i class="fas fa-fw fa-tasks"></i>
+                    <span>Tasks</span>
+                </a>
+            </li>
+            @auth
+                @if (auth()->user()->role === 'admin')
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('projects.index') }}">
+                            <i class="fas fa-fw fa-folder"></i>
+                            <span>Projects</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('developers.index') }}">
+                            <i class="fas fa-fw fa-users"></i>
+                            <span>Developers</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('reports.index') }}">
+                            <i class="fas fa-fw fa-chart-bar"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                @endif
+            @endauth
+
+
+            <hr class="sidebar-divider d-none d-md-block">
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+
+
+        {{-- End Sidebar --}}
+
+        {{-- Content Wrapper --}}
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+
+                {{-- Topbar --}}
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <div class="d-none d-sm-inline-block font-weight-bold text-gray-700">
+                        @yield('page_title', 'Dashboard')
+                    </div>
+
+                    <ul class="navbar-nav ml-auto">
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    {{ auth()->user()->name }}
+                                </span>
+                                <i class="fas fa-user-circle fa-lg text-gray-600"></i>
+                            </a>
+
+                            {{-- Dropdown - User Information --}}
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+
+                                <a class="dropdown-item" href="{{ route('account.profile') }}">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+
+                                <a class="dropdown-item" href="{{ route('account.password.edit') }}">
+                                    <i class="fas fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Ganti Password
+                                </a>
+
+                                <div class="dropdown-divider"></div>
+
+                                {{-- Logout harus POST --}}
+                                <a class="dropdown-item" href="#"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+                {{-- End Topbar --}}
+
+                <div class="container-fluid">
+
+                    @if (session('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <div class="font-weight-bold mb-1">Terjadi error:</div>
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $e)
+                                    <li>{{ $e }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @yield('content')
+                </div>
+
+            </div>
+
+            {{-- Footer --}}
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>&copy; Codevision {{ date('Y') }}</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    {{-- SB Admin 2 JS --}}
+    <script src="{{ asset('sbadmin2/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('sbadmin2/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('sbadmin2/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <script src="{{ asset('sbadmin2/js/sb-admin-2.min.js') }}"></script>
+
+</body>
+
+</html>

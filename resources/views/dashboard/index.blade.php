@@ -1,0 +1,188 @@
+@extends('layouts.admin')
+
+@section('title', 'Dashboard')
+@section('page_title', 'Dashboard')
+
+@section('content')
+<div class="container-fluid">
+
+  {{-- Header --}}
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+      <p class="mb-0 text-muted">Ringkasan aktivitas Project & Task.</p>
+    </div>
+    <a href="{{ route('reports.index') }}" class="btn btn-sm btn-danger">
+      <i class="fas fa-file-pdf"></i> Laporan (PDF)
+    </a>
+  </div>
+
+  {{-- Cards --}}
+  <div class="row">
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Projects</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalProjects }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-folder-open fa-2x text-gray-300"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <a href="{{ route('projects.index') }}" class="small">Lihat data <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalTasks }}</div>
+              <div class="text-muted small mt-1">Done: {{ $doneTasks }} ({{ $doneRate }}%)</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-tasks fa-2x text-gray-300"></i>
+            </div>
+          </div>
+
+          {{-- mini progress --}}
+          <div class="progress progress-sm mt-3">
+            <div class="progress-bar" role="progressbar" style="width: {{ $doneRate }}%"
+                 aria-valuenow="{{ $doneRate }}" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+
+          <div class="mt-3">
+            <a href="{{ route('tasks.index') }}" class="small">Lihat data <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Developers</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalDevelopers }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-users fa-2x text-gray-300"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <a href="{{ route('developers.index') }}" class="small">Lihat data <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-danger shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Overdue</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $overdueCount }}</div>
+              <div class="text-muted small mt-1">Deadline lewat & belum done</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <a href="{{ route('reports.tasks_overdue') }}" class="small text-danger">Lihat report <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  {{-- Tables --}}
+  <div class="row">
+
+    {{-- Overdue Table --}}
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h6 class="m-0 font-weight-bold text-danger">Overdue Tasks (Top 8)</h6>
+          <a href="{{ route('reports.tasks_overdue') }}" class="btn btn-sm btn-danger">
+            <i class="fas fa-eye"></i> Buka Report
+          </a>
+        </div>
+        <div class="card-body table-responsive">
+          <table class="table table-bordered table-hover mb-0">
+            <thead class="thead-light">
+              <tr>
+                <th>Task</th>
+                <th>Project</th>
+                <th>Developer</th>
+                <th class="text-center">Deadline</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($overdueTasks as $t)
+                <tr>
+                  <td>{{ $t->title }}</td>
+                  <td>{{ $t->project?->name ?? '-' }}</td>
+                  <td>{{ $t->developer?->name ?? '-' }}</td>
+                  <td class="text-center">{{ $t->deadline }}</td>
+                </tr>
+              @empty
+                <tr><td colspan="4" class="text-center text-muted">Tidak ada overdue task.</td></tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    {{-- Latest Tasks --}}
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h6 class="m-0 font-weight-bold text-primary">Task Terbaru (Top 8)</h6>
+          <a href="{{ route('tasks.index') }}" class="btn btn-sm btn-primary">
+            <i class="fas fa-list"></i> Data Task
+          </a>
+        </div>
+        <div class="card-body table-responsive">
+          <table class="table table-bordered table-hover mb-0">
+            <thead class="thead-light">
+              <tr>
+                <th>Task</th>
+                <th>Project</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Progress</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($latestTasks as $t)
+                <tr>
+                  <td>{{ $t->title }}</td>
+                  <td>{{ $t->project?->name ?? '-' }}</td>
+                  <td class="text-center">{{ strtoupper($t->status) }}</td>
+                  <td class="text-center">{{ $t->progress }}%</td>
+                </tr>
+              @empty
+                <tr><td colspan="4" class="text-center text-muted">Belum ada task.</td></tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+@endsection

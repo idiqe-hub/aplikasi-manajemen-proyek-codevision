@@ -1,0 +1,32 @@
+@media print {
+  /* sembunyikan elemen yang gak perlu */
+  .sidebar, .topbar, footer, .scroll-to-top, .btn, .pagination {
+    display: none !important;
+  }
+
+  /* full width konten */
+  #content-wrapper, #content {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .container-fluid {
+    padding: 0 !important;
+  }
+
+  /* card jadi polos */
+  .card, .shadow {
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* tabel lebih enak dibaca */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  th, td {
+    border: 1px solid #000 !important;
+    color: #000 !important;
+  }
+}
