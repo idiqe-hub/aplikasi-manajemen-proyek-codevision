@@ -106,114 +106,92 @@
 <body class="sidebar-solid">
 
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-xl-10 col-lg-12 col-md-9">
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <div class="row">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10">
 
-                            {{-- KIRI : ILUSTRASI --}}
-                            <div class="col-lg-6 d-none d-lg-block bg-login-image"
-                                style="background:url('{{ asset('sbadmin2/img/logo-pkl.png') }}');">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body p-0">
+                        <div class="p-5">
+
+                            {{-- HEADER --}}
+                            <div class="text-center mb-4">
+                                <img src="{{ asset('sbadmin2/img/logo-pkl.png') }}" alt="Logo"
+                                    style="height:60px" class="mb-2">
+                                <h1 class="h4 text-gray-900 login-title mb-1">Login</h1>
+                                <small class="login-sub text-muted">Codevision Project Management</small>
                             </div>
 
-                            {{-- KANAN : FORM --}}
-                            <div class="col-lg-6">
-                                <div class="p-5">
+                            {{-- STATUS / ERROR --}}
+                            @if (session('status'))
+                                <div class="alert alert-success small">{{ session('status') }}</div>
+                            @endif
 
-                                    {{-- HEADER --}}
-                                    <div class="text-center mb-4">
-                                        <img src="{{ asset('sbadmin2/img/logo-pkl.png') }}" alt="Logo"
-                                            style="height:60px" class="mb-2">
-                                        <h1 class="h4 text-gray-900 login-title mb-1">Login</h1>
-                                        <small class="login-sub">Codevision Project Management</small>
+                            @if ($errors->any())
+                                <div class="alert alert-danger small mb-3">
+                                    <ul class="mb-0 pl-3">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
+                            {{-- FORM LOGIN --}}
+                            <form method="POST" action="{{ route('login') }}">
+                                @csrf
+
+                                {{-- Email --}}
+                                <div class="form-group">
+                                    <label class="small font-weight-bold text-gray-700">Email</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-white">
+                                                <i class="fas fa-envelope text-muted"></i>
+                                            </span>
+                                        </div>
+                                        <input type="email" name="email"
+                                            class="form-control"
+                                            value="{{ old('email') }}"
+                                            required autofocus>
+                                    </div>
+                                </div>
+
+                                {{-- Password --}}
+                                <div class="form-group">
+                                    <label class="small font-weight-bold text-gray-700">Password</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-white">
+                                                <i class="fas fa-lock text-muted"></i>
+                                            </span>
+                                        </div>
+                                        <input type="password" name="password"
+                                            class="form-control"
+                                            required>
+                                    </div>
+                                </div>
+
+                                {{-- Remember + Lupa Password --}}
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="custom-control custom-checkbox small">
+                                        <input type="checkbox" class="custom-control-input" id="remember" name="remember">
+                                        <label class="custom-control-label" for="remember">Remember me</label>
                                     </div>
 
-                                    {{-- STATUS / ERROR --}}
-                                    @if (session('status'))
-                                        <div class="alert alert-success small">{{ session('status') }}</div>
+                                    @if (Route::has('password.request'))
+                                        <a class="small" href="{{ route('password.request') }}">Lupa Password?</a>
                                     @endif
-
-                                    @if ($errors->any())
-                                        <div class="alert alert-danger small">
-                                            <ul class="mb-0 pl-3">
-                                                @foreach ($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-
-                                    {{-- FORM --}}
-                                    <form method="POST" action="{{ route('login') }}">
-                                        @csrf
-
-                                        {{-- EMAIL --}}
-                                        <div class="form-group">
-                                            <label class="small font-weight-bold mb-1">Email</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">
-                                                        <i class="fas fa-envelope"></i>
-                                                    </span>
-                                                </div>
-                                                <input type="email" name="email" value="{{ old('email') }}"
-                                                    class="form-control form-control-login"
-                                                    placeholder="admin@codevision.test" required autofocus>
-                                            </div>
-                                        </div>
-
-                                        {{-- PASSWORD --}}
-                                        <div class="form-group">
-                                            <label class="small font-weight-bold mb-1">Password</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">
-                                                        <i class="fas fa-lock"></i>
-                                                    </span>
-                                                </div>
-
-                                                <input id="password" type="password" name="password"
-                                                    class="form-control form-control-login"
-                                                    placeholder="Masukkan password" required>
-
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-light" type="button" id="togglePassword"
-                                                        style="border:1px solid #e7eef6; border-left:0; background:#f6f9fc;">
-                                                        <i class="fas fa-eye" id="toggleIcon"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="remember_me"
-                                                    name="remember">
-                                                <label class="custom-control-label" for="remember_me">
-                                                    Remember me
-                                                </label>
-                                            </div>
-
-                                            @if (Route::has('password.request'))
-                                                <a class="small font-weight-bold"
-                                                    href="{{ route('password.request') }}">
-                                                    Lupa Password?
-                                                </a>
-                                            @endif
-                                        </div>
-
-                                        <button type="submit" class="btn btn-primary btn-block btn-login">
-                                            <i class="fas fa-sign-in-alt mr-2"></i> Login
-                                        </button>
-                                    </form>
-
                                 </div>
-                            </div>
-                            {{-- END KANAN --}}
+
+                                <button type="submit" class="btn btn-primary btn-block py-2">
+                                    <i class="fas fa-sign-in-alt mr-1"></i> Login
+                                </button>
+                            </form>
+
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
