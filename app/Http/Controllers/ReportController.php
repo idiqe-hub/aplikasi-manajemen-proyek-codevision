@@ -164,7 +164,8 @@ class ReportController extends Controller
             'instansiName' => 'CODEVISION.ID',
             'instansiTagline' => 'Software House & IT Solutions',
             'instansiAddress' => 'Jl. Tj. Raya Prumnas Kayu Tangi No.23 RT.20 Blok 4, Sungai Miai, Kec. Banjarmasin Utara, Kota Banjarmasin, Kalimantan Selatan 70123',
-            'logoPath' => file_exists(public_path('images/logo-codevision.png')) ? public_path('images/logo-codevision.png') : null,
+            'instansiContact' => 'Email: hello@codevision.id | Web: https://codevision.id',
+            'logoPath' => file_exists(public_path('sbadmin2/img/logo-pkl.png')) ? public_path('images/logo-codevision.png') : null,
 
             'tz' => $tz,
         ];
