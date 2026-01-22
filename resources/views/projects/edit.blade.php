@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title', 'Edit Project')
-
+@section('page_title','Edit Project')
 @section('content')
 <h3 class="mb-3">Edit Project</h3>
 

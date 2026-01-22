@@ -16,23 +16,23 @@ class ReportController extends Controller
     }
 
     // 1) Project aktif (planned + on_progress)
-   public function projectsActive(Request $request)
-{
-    $status = $request->query('status');
+    public function projectsActive(Request $request)
+    {
+        $status = $request->query('status');
 
-    $query = Project::query();
+        $query = Project::query();
 
-    if (!empty($status)) {
-        $query->where('status', $status);
+        if (!empty($status)) {
+            $query->where('status', $status);
+        }
+
+        $projects = $query
+            ->orderBy('id', 'asc')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('reports.projects_active', compact('projects', 'status'));
     }
-
-    $projects = $query
-        ->orderBy('id', 'asc')
-        ->paginate(10)
-        ->withQueryString();
-
-    return view('reports.projects_active', compact('projects', 'status'));
-}
 
 
 
@@ -51,16 +51,21 @@ class ReportController extends Controller
             $query->where('developer_id', $developerId);
         }
 
-        if ($from) $query->whereDate('deadline', '>=', $from);
-        if ($to)   $query->whereDate('deadline', '<=', $to);
+        if ($from)
+            $query->whereDate('deadline', '>=', $from);
+        if ($to)
+            $query->whereDate('deadline', '<=', $to);
 
         $tasks = $query->paginate(10)->withQueryString();
 
         $summaryQuery = Task::query();
 
-        if ($developerId) $summaryQuery->where('developer_id', $developerId);
-        if ($from)        $summaryQuery->whereDate('deadline', '>=', $from);
-        if ($to)          $summaryQuery->whereDate('deadline', '<=', $to);
+        if ($developerId)
+            $summaryQuery->where('developer_id', $developerId);
+        if ($from)
+            $summaryQuery->whereDate('deadline', '>=', $from);
+        if ($to)
+            $summaryQuery->whereDate('deadline', '<=', $to);
 
         $summary = $summaryQuery
             ->selectRaw("status, COUNT(*) as total")
@@ -133,7 +138,7 @@ class ReportController extends Controller
         ")->first();
 
         $totals ??= (object) ['total_estimated' => 0, 'total_actual' => 0];
-        $diff = (int)$totals->total_actual - (int)$totals->total_estimated;
+        $diff = (int) $totals->total_actual - (int) $totals->total_estimated;
 
         return view('reports.hours_summary', compact('projects', 'projectId', 'tasks', 'totals', 'diff'));
     }
@@ -152,6 +157,8 @@ class ReportController extends Controller
     private function kopData(Request $request, string $docTitle, string $reportTitle, string $filters = '', string $keterangan = '')
     {
         $tz = $this->resolveTz($request);
+        $logoPath = public_path('sbadmin2/img/logo-pkl.png');
+        $logoUri = file_exists($logoPath) ? ('file://' . $logoPath) : null;
 
         return [
             'docTitle' => $docTitle,
@@ -165,8 +172,8 @@ class ReportController extends Controller
             'instansiTagline' => 'Software House & IT Solutions',
             'instansiAddress' => 'Jl. Tj. Raya Prumnas Kayu Tangi No.23 RT.20 Blok 4, Sungai Miai, Kec. Banjarmasin Utara, Kota Banjarmasin, Kalimantan Selatan 70123',
             'instansiContact' => 'Email: hello@codevision.id | Web: https://codevision.id',
-            'logoPath' => file_exists(public_path('sbadmin2/img/logo-pkl.png')) ? public_path('images/logo-codevision.png') : null,
-
+            'logoPath' => file_exists($logoPath) ? $logoPath : null,
+            'logoUri'  => $logoUri,
             'tz' => $tz,
         ];
     }
@@ -176,38 +183,38 @@ class ReportController extends Controller
     // =========================
 
     public function pdfProjectsActive(Request $request)
-{
-    $status = $request->query('status');
+    {
+        $status = $request->query('status');
 
-    $query = Project::query();
+        $query = Project::query();
 
-    if (!empty($status)) {
-        $query->where('status', $status);
+        if (!empty($status)) {
+            $query->where('status', $status);
+        }
+
+        $projects = $query->orderBy('id', 'asc')->get();
+
+        $filters = 'status: ' . ($status ?: 'semua');
+
+        $data = $this->kopData(
+            $request,
+            'Laporan Project',
+            'Laporan Project',
+            $filters,
+            'Daftar project berdasarkan status'
+        );
+
+        $tz = $data['tz'];
+
+        $pdf = Pdf::loadView(
+            'reports.projects_active_pdf',
+            array_merge($data, compact('projects'))
+        )->setPaper('a4', 'portrait');
+
+        return $pdf->download(
+            'Laporan_Project_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf'
+        );
     }
-
-    $projects = $query->orderBy('id', 'asc')->get();
-
-    $filters = 'status: ' . ($status ?: 'semua');
-
-    $data = $this->kopData(
-        $request,
-        'Laporan Project',
-        'Laporan Project',
-        $filters,
-        'Daftar project berdasarkan status'
-    );
-
-    $tz = $data['tz'];
-
-    $pdf = Pdf::loadView(
-        'reports.projects_active_pdf',
-        array_merge($data, compact('projects'))
-    )->setPaper('a4', 'portrait');
-
-    return $pdf->download(
-        'Laporan_Project_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf'
-    );
-}
 
 
     public function pdfTasksByDeveloper(Request $request)
@@ -218,9 +225,12 @@ class ReportController extends Controller
 
         $query = Task::with(['project', 'developer']);
 
-        if ($developerId) $query->where('developer_id', $developerId);
-        if ($from)        $query->whereDate('deadline', '>=', $from);
-        if ($to)          $query->whereDate('deadline', '<=', $to);
+        if ($developerId)
+            $query->where('developer_id', $developerId);
+        if ($from)
+            $query->whereDate('deadline', '>=', $from);
+        if ($to)
+            $query->whereDate('deadline', '<=', $to);
 
 
         $tasks = $query->orderBy('id', 'asc')->get();

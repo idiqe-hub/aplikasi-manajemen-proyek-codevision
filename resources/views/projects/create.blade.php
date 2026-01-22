@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @section('title', 'Tambah Project')
+@section('page_title','Tambah Project')
 
 @section('content')
 <h3 class="mb-3">Tambah Project</h3>
