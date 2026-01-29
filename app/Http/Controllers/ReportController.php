@@ -168,12 +168,12 @@ class ReportController extends Controller
             'filters' => $filters,
             'keterangan' => $keterangan,
 
-            'instansiName' => 'CODEVISION.ID',
-            'instansiTagline' => 'Software House & IT Solutions',
-            'instansiAddress' => 'Jl. Tj. Raya Prumnas Kayu Tangi No.23 RT.20 Blok 4, Sungai Miai, Kec. Banjarmasin Utara, Kota Banjarmasin, Kalimantan Selatan 70123',
+            'instansiName' => 'CV. MAHKOTA BARITO',
+            'instansiTagline' => 'CODEVISION.ID Software House & IT Solutions',
+            'instansiAddress' => 'Jl. Temanggung Silam RT 002 / RW 004 NO 29 Puruk Cahu, Kec. Murung, Kabupaten Murung Raya Kalimantan Tengah 73911',
             'instansiContact' => 'Email: hello@codevision.id | Web: https://codevision.id',
             'logoPath' => file_exists($logoPath) ? $logoPath : null,
-            'logoUri'  => $logoUri,
+            'logoUri' => $logoUri,
             'tz' => $tz,
         ];
     }
