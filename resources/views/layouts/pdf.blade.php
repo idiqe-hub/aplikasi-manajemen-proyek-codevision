@@ -185,7 +185,7 @@
         float: right;
         text-align: center;
     ">
-            Puruk Cahu, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>
+            Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>
             Mengetahui,<br>
             Pimpinan Perusahaan<br><br><br><br>
 
