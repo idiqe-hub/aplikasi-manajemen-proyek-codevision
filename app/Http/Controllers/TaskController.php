@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\Project;
 use App\Models\Developer;
+use App\Models\TaskActivityLog;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -95,6 +96,10 @@ class TaskController extends Controller
     {
         $this->authorizeDeveloper($task);
 
+        $task->load(['activityLogs' => function ($query) {
+            $query->latest();
+        }, 'activityLogs.user', 'project', 'developer']);
+
         return view('tasks.show', compact('task'));
     }
 
@@ -146,7 +151,23 @@ class TaskController extends Controller
             $data['estimated_hours'] = $task->estimated_hours;
         }
 
+        $oldStatus = $task->status;
+        $oldProgress = $task->progress;
+
         $task->update($data);
+
+        // Catat log jika ada perubahan status atau progress
+        if ($oldStatus !== $task->status || $oldProgress != $task->progress) {
+            TaskActivityLog::create([
+                'task_id'      => $task->id,
+                'user_id'      => auth()->id(),
+                'old_status'   => $oldStatus,
+                'new_status'   => $task->status,
+                'old_progress' => $oldProgress,
+                'new_progress' => $task->progress,
+                'note'         => 'Diperbarui melalui form edit task',
+            ]);
+        }
 
         return redirect()->route('tasks.index')
             ->with('success', 'Task berhasil diperbarui.');
