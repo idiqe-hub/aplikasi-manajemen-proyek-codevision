@@ -13,7 +13,12 @@
 
 <div class="card card-body">
     <div class="mb-2"><span class="fw-semibold">Nama:</span> {{ $project->name }}</div>
-    <div class="mb-2"><span class="fw-semibold">Client:</span> {{ $project->client_name ?? '-' }}</div>
+    <div class="mb-2"><span class="fw-semibold">Client:</span>
+        {{ $project->client?->name ?? ($project->client_name ?? '-') }}
+        @if($project->client?->company)
+            <small class="text-muted">({{ $project->client->company }})</small>
+        @endif
+    </div>
     <div class="mb-2"><span class="fw-semibold">Start:</span> {{ $project->start_date ?? '-' }}</div>
     <div class="mb-2"><span class="fw-semibold">Deadline:</span> {{ $project->end_date ?? '-' }}</div>
     <div class="mb-2"><span class="fw-semibold">Status:</span> {{ $project->status }}</div>

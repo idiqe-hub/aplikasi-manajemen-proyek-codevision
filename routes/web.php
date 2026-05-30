@@ -8,12 +8,19 @@ use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ClientDashboardController;
 
 
 Route::get('/', function () {
-    return auth()->check()
-        ? redirect()->route('dashboard')
-        : redirect()->route('login');
+    if (!auth()->check()) {
+        return redirect()->route('login');
+    }
+    // Arahkan sesuai role
+    return match (auth()->user()->role) {
+        'client' => redirect()->route('client.dashboard'),
+        default  => redirect()->route('dashboard'),
+    };
 })->name('home');
 
 
@@ -24,6 +31,7 @@ Route::middleware(['auth', 'role:admin,developer'])->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::resource('projects', ProjectController::class);
         Route::resource('developers', DeveloperController::class);
+        Route::resource('clients', ClientController::class);
         Route::put('/developers/{developer}/reset-password', [\App\Http\Controllers\DeveloperController::class, 'resetPassword'])
             ->name('developers.reset-password');
 
@@ -59,3 +67,12 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+
+// ================================================================
+// Route khusus CLIENT — read-only, tidak bisa akses menu admin
+// ================================================================
+Route::middleware(['auth', 'role:client'])->group(function () {
+    Route::get('/client/dashboard', [ClientDashboardController::class, 'index'])
+         ->name('client.dashboard');
+});

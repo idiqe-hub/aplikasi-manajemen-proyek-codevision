@@ -114,40 +114,76 @@
 
 
             <hr class="sidebar-divider my-0">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('dashboard') }}">
+
+            {{-- Menu Dashboard --}}
+            <li class="nav-item {{ request()->routeIs('dashboard', 'client.dashboard') ? 'active' : '' }}">
+                @auth
+                    @if(auth()->user()->role === 'client')
+                        <a class="nav-link" href="{{ route('client.dashboard') }}">
+                    @else
+                        <a class="nav-link" href="{{ route('dashboard') }}">
+                    @endif
+                @endauth
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
-                </a>
+                    </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('tasks.index') }}">
-                    <i class="fas fa-fw fa-tasks"></i>
-                    <span>Tasks</span>
-                </a>
-            </li>
+
             @auth
-                @if (auth()->user()->role === 'admin')
-                    <li class="nav-item">
+                @php $role = auth()->user()->role; @endphp
+
+                {{-- ============================================
+                     MENU ADMIN & DEVELOPER
+                     ============================================ --}}
+                @if($role === 'admin' || $role === 'developer')
+                    <li class="nav-item {{ request()->routeIs('tasks.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('tasks.index') }}">
+                            <i class="fas fa-fw fa-tasks"></i>
+                            <span>Tasks</span>
+                        </a>
+                    </li>
+                @endif
+
+                {{-- ============================================
+                     MENU ADMIN ONLY
+                     ============================================ --}}
+                @if($role === 'admin')
+                    <li class="nav-item {{ request()->routeIs('projects.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('projects.index') }}">
                             <i class="fas fa-fw fa-folder"></i>
                             <span>Projects</span>
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item {{ request()->routeIs('clients.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('clients.index') }}">
+                            <i class="fas fa-fw fa-user-tie"></i>
+                            <span>Clients</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ request()->routeIs('developers.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('developers.index') }}">
                             <i class="fas fa-fw fa-users"></i>
                             <span>Developers</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+
+                    <li class="nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('reports.index') }}">
                             <i class="fas fa-fw fa-chart-bar"></i>
                             <span>Reports</span>
                         </a>
                     </li>
                 @endif
+
+                {{-- ============================================
+                     MENU CLIENT: hanya Dashboard
+                     (tidak ada akses ke fitur admin/developer)
+                     ============================================ --}}
+                {{-- Menu client tidak perlu ditambahkan di sini
+                     karena proteksi sudah di middleware route --}}
+
             @endauth
 
 

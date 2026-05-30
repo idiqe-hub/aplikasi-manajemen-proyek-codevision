@@ -11,6 +11,13 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Guard: client tidak boleh mengakses dashboard admin.
+        // Meski route sudah diproteksi middleware role:admin,developer,
+        // ini sebagai lapisan kedua yang lebih ramah (redirect vs 403).
+        if (auth()->user()->role === 'client') {
+            return redirect()->route('client.dashboard');
+        }
+
         $totalProjects   = Project::count();
         $totalTasks      = Task::count();
         $totalDevelopers = Developer::count();
