@@ -47,7 +47,11 @@ class TaskController extends Controller
     public function create()
     {
         $projects = Project::orderBy('name')->get();
-        $developers = Developer::orderBy('name')->get();
+
+        // Ambil semua developer + hitung task aktif (todo+in_progress) untuk info workload
+        $developers = Developer::withCount([
+            'tasks as active_count' => fn($q) => $q->whereIn('status', ['todo', 'in_progress']),
+        ])->orderBy('name')->get();
 
         return view('tasks.create', compact('projects', 'developers'));
     }
@@ -98,7 +102,11 @@ class TaskController extends Controller
     public function edit(Task $task)
     {
         $projects = Project::orderBy('name')->get();
-        $developers = Developer::orderBy('name')->get();
+
+        // Ambil semua developer + hitung task aktif untuk info workload
+        $developers = Developer::withCount([
+            'tasks as active_count' => fn($q) => $q->whereIn('status', ['todo', 'in_progress']),
+        ])->orderBy('name')->get();
 
         return view('tasks.edit', compact('task', 'projects', 'developers'));
     }

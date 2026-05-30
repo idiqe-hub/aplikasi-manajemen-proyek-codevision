@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientDashboardController;
+use App\Http\Controllers\DeveloperCapacityController;
 
 
 Route::get('/', function () {
@@ -30,7 +31,13 @@ Route::middleware(['auth', 'role:admin,developer'])->group(function () {
     // ADMIN ONLY
     Route::middleware('role:admin')->group(function () {
         Route::resource('projects', ProjectController::class);
+
+        // PENTING: route statis /developers/capacity harus SEBELUM resource
+        // agar tidak konflik dengan route developers.show ({developer} = 'capacity')
+        Route::get('/developers/capacity', [DeveloperCapacityController::class, 'index'])
+             ->name('developers.capacity');
         Route::resource('developers', DeveloperController::class);
+
         Route::resource('clients', ClientController::class);
         Route::put('/developers/{developer}/reset-password', [\App\Http\Controllers\DeveloperController::class, 'resetPassword'])
             ->name('developers.reset-password');

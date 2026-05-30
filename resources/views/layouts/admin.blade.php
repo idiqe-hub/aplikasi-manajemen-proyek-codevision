@@ -162,10 +162,17 @@
                         </a>
                     </li>
 
-                    <li class="nav-item {{ request()->routeIs('developers.*') ? 'active' : '' }}">
+                    <li class="nav-item {{ request()->routeIs('developers.index', 'developers.show', 'developers.create', 'developers.edit') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('developers.index') }}">
                             <i class="fas fa-fw fa-users"></i>
                             <span>Developers</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ request()->routeIs('developers.capacity') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('developers.capacity') }}">
+                            <i class="fas fa-fw fa-tachometer-alt"></i>
+                            <span>Kapasitas Developer</span>
                         </a>
                     </li>
 
