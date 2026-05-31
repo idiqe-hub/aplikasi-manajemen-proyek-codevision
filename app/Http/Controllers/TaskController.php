@@ -96,9 +96,18 @@ class TaskController extends Controller
     {
         $this->authorizeDeveloper($task);
 
-        $task->load(['activityLogs' => function ($query) {
-            $query->latest();
-        }, 'activityLogs.user', 'project', 'developer']);
+        $task->load([
+            'activityLogs' => function ($query) {
+                $query->latest();
+            }, 
+            'activityLogs.user', 
+            'comments' => function ($query) {
+                $query->oldest(); // kronologis dari lama ke baru
+            }, 
+            'comments.user', 
+            'project', 
+            'developer'
+        ]);
 
         return view('tasks.show', compact('task'));
     }

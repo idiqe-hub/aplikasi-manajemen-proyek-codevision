@@ -5,8 +5,8 @@
 @section('content')
 
 <div class="row">
-    {{-- Bagian Kiri: Informasi Task --}}
-    <div class="col-lg-6">
+    {{-- Bagian Kiri: Informasi Task & Komentar --}}
+    <div class="col-lg-7">
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Informasi Task</h6>
@@ -78,10 +78,82 @@
                 </dl>
             </div>
         </div>
+
+        {{-- Komentar / Diskusi Task --}}
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-comments mr-1"></i> Diskusi Task
+                </h6>
+            </div>
+            <div class="card-body">
+                {{-- Daftar Komentar --}}
+                @if($task->comments && $task->comments->count() > 0)
+                    <div class="mb-4">
+                        @foreach($task->comments as $comment)
+                            <div class="mb-3 {{ $loop->last ? '' : 'border-bottom pb-3' }}">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>
+                                        <i class="fas fa-user-circle text-gray-400 mr-1"></i> 
+                                        {{ $comment->user->name }}
+                                        <span class="badge badge-light border text-uppercase ml-1" style="font-size: 10px;">
+                                            {{ $comment->user->role }}
+                                        </span>
+                                    </strong>
+                                    <small class="text-muted" title="{{ $comment->created_at->format('d M Y, H:i:s') }}">
+                                        {{ $comment->created_at->diffForHumans() }}
+                                    </small>
+                                </div>
+                                <div class="text-gray-800 ml-4 pl-1" style="white-space: pre-line;">
+                                    {{ $comment->comment }}
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="text-center text-muted py-4 mb-3">
+                        <i class="far fa-comments fa-2x mb-2 d-block text-gray-300"></i>
+                        Belum ada diskusi di task ini.
+                    </div>
+                @endif
+
+                {{-- Form Tambah Komentar (Kecuali Client) --}}
+                @if(auth()->user()->role !== 'client')
+                    @php
+                        // Developer hanya boleh komentar di task-nya sendiri
+                        $canComment = true;
+                        if(auth()->user()->role === 'developer') {
+                            $dev = auth()->user()->developer;
+                            if(!$dev || $task->developer_id !== $dev->id) {
+                                $canComment = false;
+                            }
+                        }
+                    @endphp
+
+                    @if($canComment)
+                        <form action="{{ route('tasks.comments.store', $task) }}" method="POST" class="mt-2 border-top pt-3">
+                            @csrf
+                            <div class="form-group">
+                                <label for="comment" class="sr-only">Tulis Komentar</label>
+                                <textarea name="comment" id="comment" rows="3" class="form-control" placeholder="Tulis komentar atau diskusi Anda di sini..." required maxlength="1000"></textarea>
+                                @error('comment')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-paper-plane mr-1"></i> Kirim Komentar
+                                </button>
+                            </div>
+                        </form>
+                    @endif
+                @endif
+            </div>
+        </div>
     </div>
 
     {{-- Bagian Kanan: Task Activity Log --}}
-    <div class="col-lg-6">
+    <div class="col-lg-5">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">

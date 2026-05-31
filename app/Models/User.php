@@ -42,6 +42,11 @@ class User extends Authenticatable
         return $this->hasMany(\App\Models\TaskActivityLog::class);
     }
 
+    public function taskComments()
+    {
+        return $this->hasMany(\App\Models\TaskComment::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

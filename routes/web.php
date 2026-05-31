@@ -11,6 +11,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\DeveloperCapacityController;
+use App\Http\Controllers\TaskCommentController;
 
 
 Route::get('/', function () {
@@ -59,6 +60,7 @@ Route::middleware(['auth', 'role:admin,developer'])->group(function () {
 
     Route::middleware('role:admin,developer')->group(function () {
         Route::resource('tasks', TaskController::class);
+        Route::post('/tasks/{task}/comments', [TaskCommentController::class, 'store'])->name('tasks.comments.store');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
