@@ -3,7 +3,7 @@
         {{-- Judul Task --}}
         <div class="d-flex justify-content-between align-items-start mb-2">
             <h6 class="font-weight-bold text-dark mb-0" style="font-size: 0.9rem;">
-                <a href="{{ route('tasks.show', $task->id) }}" class="text-decoration-none text-dark"
+                <a href="/tasks/{{ $task->id }}" class="text-decoration-none text-dark"
                    onclick="event.stopPropagation();">
                     {{ $task->title }}
                 </a>

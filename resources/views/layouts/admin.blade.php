@@ -187,6 +187,20 @@
                     </li>
                 @endif
 
+                {{-- Menu Notifikasi: Admin dan Developer saja --}}
+                @if(in_array($role, ['admin', 'developer']))
+                    <li class="nav-item {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('notifications.index') }}">
+                            <i class="fas fa-fw fa-bell"></i>
+                            <span>Notifikasi</span>
+                            @php $nb = auth()->user()->unreadNotifications->count(); @endphp
+                            @if($nb > 0)
+                                <span class="badge badge-danger ml-1">{{ $nb > 9 ? '9+' : $nb }}</span>
+                            @endif
+                        </a>
+                    </li>
+                @endif
+
                 {{-- ============================================
                      MENU CLIENT: hanya Dashboard
                      (tidak ada akses ke fitur admin/developer)
@@ -222,6 +236,23 @@
                     </div>
 
                     <ul class="navbar-nav ml-auto">
+
+                        {{-- Bell Icon Notifikasi (admin & developer) --}}
+                        @auth
+                            @if(in_array(auth()->user()->role, ['admin', 'developer']))
+                                @php $unreadCount = auth()->user()->unreadNotifications->count(); @endphp
+                                <li class="nav-item mr-2">
+                                    <a class="nav-link position-relative" href="{{ route('notifications.index') }}" title="Notifikasi">
+                                        <i class="fas fa-bell fa-lg text-gray-500"></i>
+                                        @if($unreadCount > 0)
+                                            <span class="badge badge-danger badge-counter" style="position:absolute;top:5px;right:0;font-size:10px;">
+                                                {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+                                            </span>
+                                        @endif
+                                    </a>
+                                </li>
+                            @endif
+                        @endauth
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 

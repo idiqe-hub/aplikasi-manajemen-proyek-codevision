@@ -12,6 +12,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\DeveloperCapacityController;
 use App\Http\Controllers\TaskCommentController;
+use App\Http\Controllers\NotificationController;
 
 
 Route::get('/', function () {
@@ -69,6 +70,13 @@ Route::middleware(['auth', 'role:admin,developer'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Notifikasi — bisa diakses Admin dan Developer (bukan Client)
+    Route::middleware('role:admin,developer')->group(function () {
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.readAll');
+    });
 });
 
 Route::middleware(['auth'])->group(function () {

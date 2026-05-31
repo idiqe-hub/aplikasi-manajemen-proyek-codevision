@@ -52,7 +52,7 @@
               </td>
               <td>{{ $t->deadline ?? '-' }}</td>
               <td>
-                <a href="{{ route('tasks.show',$t) }}" class="btn btn-sm btn-outline-dark">Detail</a>
+                <a href="/tasks/{{ $t->id }}" class="btn btn-sm btn-outline-dark">Detail</a>
                 <a href="{{ route('tasks.edit',$t) }}" class="btn btn-sm btn-outline-primary">Edit</a>
                 <form action="{{ route('tasks.destroy',$t) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('Yakin hapus task ini?')">
