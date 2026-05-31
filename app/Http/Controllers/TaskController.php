@@ -43,6 +43,77 @@ class TaskController extends Controller
         return view('tasks.index', compact('tasks'));
     }
 
+    public function kanban()
+    {
+        $query = Task::with(['project', 'developer'])->withCount('comments');
+
+        $user = auth()->user();
+
+        if ($user->role === 'developer') {
+            $developer = $user->developer;
+            if (!$developer) {
+                return redirect()->route('pending')
+                    ->with('error', 'Akun developer belum terhubung.');
+            }
+            $query->where('developer_id', $developer->id);
+        }
+
+        $tasks = $query->get();
+
+        // Kelompokkan berdasarkan status
+        $kanban = [
+            'todo' => $tasks->where('status', 'todo'),
+            'in_progress' => $tasks->where('status', 'in_progress'),
+            'done' => $tasks->where('status', 'done'),
+        ];
+
+        return view('tasks.kanban', compact('kanban'));
+    }
+
+    public function updateStatus(Request $request, Task $task)
+    {
+        $this->authorizeDeveloper($task);
+
+        $request->validate([
+            'status' => 'required|in:todo,in_progress,done'
+        ]);
+
+        $oldStatus = $task->status;
+        $newStatus = $request->status;
+
+        if ($oldStatus === $newStatus) {
+            return response()->json(['success' => true]);
+        }
+
+        $oldProgress = $task->progress;
+        $newProgress = $task->progress;
+
+        if ($newStatus === 'done') {
+            $newProgress = 100;
+        }
+
+        $task->update([
+            'status' => $newStatus,
+            'progress' => $newProgress,
+        ]);
+
+        // Simpan log aktivitas
+        TaskActivityLog::create([
+            'task_id'      => $task->id,
+            'user_id'      => auth()->id(),
+            'old_status'   => $oldStatus,
+            'new_status'   => $newStatus,
+            'old_progress' => $oldProgress,
+            'new_progress' => $newProgress,
+            'note'         => 'Memindahkan task di Kanban Board',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'new_progress' => $newProgress
+        ]);
+    }
+
 
 
     public function create()

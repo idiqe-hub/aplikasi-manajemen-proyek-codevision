@@ -59,6 +59,9 @@ Route::middleware(['auth', 'role:admin,developer'])->group(function () {
     });
 
     Route::middleware('role:admin,developer')->group(function () {
+        Route::get('/tasks/kanban', [TaskController::class, 'kanban'])->name('tasks.kanban');
+        Route::patch('/tasks/{task}/kanban-status', [TaskController::class, 'updateStatus'])->name('tasks.kanban.status');
+        
         Route::resource('tasks', TaskController::class);
         Route::post('/tasks/{task}/comments', [TaskCommentController::class, 'store'])->name('tasks.comments.store');
     });

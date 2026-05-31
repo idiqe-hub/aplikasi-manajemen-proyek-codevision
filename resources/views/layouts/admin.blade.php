@@ -12,6 +12,9 @@
     <link href="{{ asset('sbadmin2/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('sbadmin2/css/custom.css') }}" rel="stylesheet">
 
+    {{-- CSRF Token untuk AJAX --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <style>
         /* Sidebar solid */
         .sidebar-solid {
@@ -305,6 +308,9 @@
     <script src="{{ asset('sbadmin2/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('sbadmin2/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
     <script src="{{ asset('sbadmin2/js/sb-admin-2.min.js') }}"></script>
+
+    {{-- Stack untuk scripts tambahan dari halaman child (misal: Kanban SortableJS) --}}
+    @stack('scripts')
 
 </body>
 
