@@ -56,6 +56,22 @@ Route::middleware(['auth', 'role:admin,developer'])->group(function () {
             Route::get('/project-progress/pdf', [ReportController::class, 'pdfProjectProgress'])->name('project_progress.pdf');
             Route::get('/hours-summary', [ReportController::class, 'hoursSummary'])->name('hours_summary');
             Route::get('/hours-summary/pdf', [ReportController::class, 'pdfHoursSummary'])->name('hours_summary.pdf');
+
+            // 6) Laporan Beban Kerja Developer / Workload Analytics
+            Route::get('/workload', [ReportController::class, 'workloadAnalytics'])->name('workload');
+            Route::get('/workload/pdf', [ReportController::class, 'pdfWorkloadAnalytics'])->name('workload.pdf');
+
+            // 7) Laporan Tingkat Efisiensi Waktu / Time Efficiency Rate
+            Route::get('/time-efficiency', [ReportController::class, 'timeEfficiencyRate'])->name('time_efficiency');
+            Route::get('/time-efficiency/pdf', [ReportController::class, 'pdfTimeEfficiencyRate'])->name('time_efficiency.pdf');
+
+            // 8) Laporan Ringkasan Distribusi Task per Project
+            Route::get('/task-distribution', [ReportController::class, 'taskDistribution'])->name('task_distribution');
+            Route::get('/task-distribution/pdf', [ReportController::class, 'pdfTaskDistribution'])->name('task_distribution.pdf');
+
+            // 9) Laporan Produktivitas Mingguan Developer
+            Route::get('/weekly-productivity', [ReportController::class, 'weeklyProductivity'])->name('weekly_productivity');
+            Route::get('/weekly-productivity/pdf', [ReportController::class, 'pdfWeeklyProductivity'])->name('weekly_productivity.pdf');
         });
     });
 

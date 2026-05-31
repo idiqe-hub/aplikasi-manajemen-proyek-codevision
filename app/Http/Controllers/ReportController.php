@@ -143,6 +143,110 @@ class ReportController extends Controller
         return view('reports.hours_summary', compact('projects', 'projectId', 'tasks', 'totals', 'diff'));
     }
 
+    // 6) Laporan Beban Kerja Developer / Workload Analytics
+    public function workloadAnalytics()
+    {
+        $developers = Developer::withCount([
+            'tasks as todo_count' => fn($q) => $q->where('status', 'todo'),
+            'tasks as in_progress_count' => fn($q) => $q->where('status', 'in_progress'),
+            'tasks as done_count' => fn($q) => $q->where('status', 'done'),
+            'tasks as active_count' => fn($q) => $q->whereIn('status', ['todo', 'in_progress'])
+        ])->paginate(10);
+
+        return view('reports.workload', compact('developers'));
+    }
+
+    // 7) Laporan Tingkat Efisiensi Waktu / Time Efficiency Rate
+    public function timeEfficiencyRate(Request $request)
+    {
+        $from = $request->query('from');
+        $to = $request->query('to');
+
+        $query = Task::with(['developer', 'project'])
+            ->where('status', 'done');
+
+        if ($from) {
+            $query->whereDate('updated_at', '>=', $from);
+        }
+        if ($to) {
+            $query->whereDate('updated_at', '<=', $to);
+        }
+
+        $tasks = $query->paginate(10)->withQueryString();
+
+        return view('reports.time_efficiency', compact('tasks', 'from', 'to'));
+    }
+
+    // 8) Laporan Ringkasan Distribusi Task per Project
+    public function taskDistribution()
+    {
+        $projects = Project::withCount([
+            'tasks as todo_count' => fn($q) => $q->where('status', 'todo'),
+            'tasks as in_progress_count' => fn($q) => $q->where('status', 'in_progress'),
+            'tasks as done_count' => fn($q) => $q->where('status', 'done'),
+            'tasks as total_count'
+        ])->paginate(10);
+
+        return view('reports.task_distribution', compact('projects'));
+    }
+
+    // 9) Laporan Produktivitas Mingguan Developer
+    public function weeklyProductivity(Request $request)
+    {
+        $from = $request->query('from');
+        $to = $request->query('to');
+
+        $query = Task::where('status', 'done')->with('developer');
+        $tasks = $query->get();
+
+        $completedTasks = collect();
+
+        foreach ($tasks as $task) {
+            $log = \App\Models\TaskActivityLog::where('task_id', $task->id)
+                ->where('new_status', 'done')
+                ->latest()
+                ->first();
+            
+            $completedAt = $log ? $log->created_at : $task->updated_at;
+
+            if ($from && $completedAt->format('Y-m-d') < $from) continue;
+            if ($to && $completedAt->format('Y-m-d') > $to) continue;
+
+            $task->completed_at = $completedAt;
+            $completedTasks->push($task);
+        }
+        
+        $developersData = [];
+        foreach ($completedTasks as $task) {
+            $devId = $task->developer_id;
+            if (!$devId) continue;
+            
+            if (!isset($developersData[$devId])) {
+                $developersData[$devId] = [
+                    'developer' => $task->developer,
+                    'task_count' => 0,
+                    'total_actual_hours' => 0
+                ];
+            }
+            $developersData[$devId]['task_count']++;
+            $developersData[$devId]['total_actual_hours'] += $task->actual_hours ?? 0;
+        }
+
+        $results = [];
+        foreach ($developersData as $data) {
+            $avg = $data['task_count'] > 0 ? $data['total_actual_hours'] / $data['task_count'] : 0;
+            $results[] = (object) [
+                'developer' => $data['developer'],
+                'task_count' => $data['task_count'],
+                'avg_actual_hours' => $avg
+            ];
+        }
+        
+        usort($results, fn($a, $b) => $b->task_count <=> $a->task_count);
+        
+        return view('reports.weekly_productivity', compact('results', 'from', 'to'));
+    }
+
     // =========================
     // KOP
     // =========================
@@ -316,5 +420,130 @@ class ReportController extends Controller
             ->setPaper('a4', 'portrait');
 
         return $pdf->download('Laporan_Estimasi_vs_Realisasi_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
+    }
+
+    public function pdfWorkloadAnalytics(Request $request)
+    {
+        $developers = Developer::withCount([
+            'tasks as todo_count' => fn($q) => $q->where('status', 'todo'),
+            'tasks as in_progress_count' => fn($q) => $q->where('status', 'in_progress'),
+            'tasks as done_count' => fn($q) => $q->where('status', 'done'),
+            'tasks as active_count' => fn($q) => $q->whereIn('status', ['todo', 'in_progress'])
+        ])->get();
+
+        $data = $this->kopData($request, 'Laporan Beban Kerja Developer', 'Laporan Beban Kerja Developer', '', 'Beban kerja berdasarkan jumlah task aktif');
+        $tz = $data['tz'];
+
+        $pdf = Pdf::loadView('reports.workload_pdf', array_merge($data, compact('developers')))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('Laporan_Workload_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
+    }
+
+    public function pdfTimeEfficiencyRate(Request $request)
+    {
+        $from = $request->query('from');
+        $to = $request->query('to');
+
+        $query = Task::with(['developer', 'project'])
+            ->where('status', 'done');
+
+        if ($from) {
+            $query->whereDate('updated_at', '>=', $from);
+        }
+        if ($to) {
+            $query->whereDate('updated_at', '<=', $to);
+        }
+
+        $tasks = $query->get();
+        $filters = 'Tanggal: ' . ($from ?: '-') . ' s/d ' . ($to ?: '-');
+
+        $data = $this->kopData($request, 'Laporan Tingkat Efisiensi Waktu', 'Laporan Tingkat Efisiensi Waktu', $filters, 'Daftar task selesai beserta persentase efisiensi');
+        $tz = $data['tz'];
+
+        $pdf = Pdf::loadView('reports.time_efficiency_pdf', array_merge($data, compact('tasks')))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('Laporan_Time_Efficiency_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
+    }
+
+    public function pdfTaskDistribution(Request $request)
+    {
+        $projects = Project::withCount([
+            'tasks as todo_count' => fn($q) => $q->where('status', 'todo'),
+            'tasks as in_progress_count' => fn($q) => $q->where('status', 'in_progress'),
+            'tasks as done_count' => fn($q) => $q->where('status', 'done'),
+            'tasks as total_count'
+        ])->get();
+
+        $data = $this->kopData($request, 'Laporan Distribusi Task per Project', 'Laporan Distribusi Task per Project', '', 'Ringkasan distribusi status task per project');
+        $tz = $data['tz'];
+
+        $pdf = Pdf::loadView('reports.task_distribution_pdf', array_merge($data, compact('projects')))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('Laporan_Task_Distribution_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
+    }
+
+    public function pdfWeeklyProductivity(Request $request)
+    {
+        $from = $request->query('from');
+        $to = $request->query('to');
+
+        $query = Task::where('status', 'done')->with('developer');
+        $tasks = $query->get();
+
+        $completedTasks = collect();
+        foreach ($tasks as $task) {
+            $log = \App\Models\TaskActivityLog::where('task_id', $task->id)
+                ->where('new_status', 'done')
+                ->latest()
+                ->first();
+            
+            $completedAt = $log ? $log->created_at : $task->updated_at;
+
+            if ($from && $completedAt->format('Y-m-d') < $from) continue;
+            if ($to && $completedAt->format('Y-m-d') > $to) continue;
+
+            $task->completed_at = $completedAt;
+            $completedTasks->push($task);
+        }
+        
+        $developersData = [];
+        foreach ($completedTasks as $task) {
+            $devId = $task->developer_id;
+            if (!$devId) continue;
+            
+            if (!isset($developersData[$devId])) {
+                $developersData[$devId] = [
+                    'developer' => $task->developer,
+                    'task_count' => 0,
+                    'total_actual_hours' => 0
+                ];
+            }
+            $developersData[$devId]['task_count']++;
+            $developersData[$devId]['total_actual_hours'] += $task->actual_hours ?? 0;
+        }
+
+        $results = [];
+        foreach ($developersData as $data) {
+            $avg = $data['task_count'] > 0 ? $data['total_actual_hours'] / $data['task_count'] : 0;
+            $results[] = (object) [
+                'developer' => $data['developer'],
+                'task_count' => $data['task_count'],
+                'avg_actual_hours' => $avg
+            ];
+        }
+        
+        usort($results, fn($a, $b) => $b->task_count <=> $a->task_count);
+
+        $filters = 'Tanggal selesai: ' . ($from ?: '-') . ' s/d ' . ($to ?: '-');
+        $data = $this->kopData($request, 'Laporan Produktivitas Mingguan', 'Laporan Produktivitas Mingguan Developer', $filters, 'Jumlah task selesai dan rata-rata jam kerja aktual');
+        $tz = $data['tz'];
+
+        $pdf = Pdf::loadView('reports.weekly_productivity_pdf', array_merge($data, compact('results')))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('Laporan_Weekly_Productivity_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
     }
 }

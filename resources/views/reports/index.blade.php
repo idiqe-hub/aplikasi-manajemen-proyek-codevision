@@ -175,6 +175,116 @@
       </div>
     </div>
 
+    {{-- CARD: 6 Beban Kerja Developer --}}
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Report 6</div>
+              <h5 class="mb-1 font-weight-bold text-gray-800">Beban Kerja Developer</h5>
+              <div class="text-muted small">Status beban berdasarkan task aktif</div>
+            </div>
+            <div class="text-gray-300">
+              <i class="fas fa-user-md fa-2x"></i>
+            </div>
+          </div>
+          <hr class="my-3">
+          <div class="d-flex">
+            <a href="{{ route('reports.workload') }}" class="btn btn-sm btn-primary mr-2">
+              <i class="fas fa-eye"></i> Buka
+            </a>
+            <a href="{{ route('reports.workload.pdf', request()->query()) }}" class="btn btn-sm btn-danger">
+              <i class="fas fa-file-pdf"></i> PDF
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{-- CARD: 7 Tingkat Efisiensi Waktu --}}
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Report 7</div>
+              <h5 class="mb-1 font-weight-bold text-gray-800">Tingkat Efisiensi Waktu</h5>
+              <div class="text-muted small">Estimasi vs Aktual untuk task selesai</div>
+              <span class="badge badge-light border mt-2">Dengan filter</span>
+            </div>
+            <div class="text-gray-300">
+              <i class="fas fa-stopwatch fa-2x"></i>
+            </div>
+          </div>
+          <hr class="my-3">
+          <div class="d-flex">
+            <a href="{{ route('reports.time_efficiency') }}" class="btn btn-sm btn-info mr-2">
+              <i class="fas fa-filter"></i> Buka
+            </a>
+            <a href="{{ route('reports.time_efficiency.pdf', request()->query()) }}" class="btn btn-sm btn-danger">
+              <i class="fas fa-file-pdf"></i> PDF
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{-- CARD: 8 Distribusi Task per Project --}}
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Report 8</div>
+              <h5 class="mb-1 font-weight-bold text-gray-800">Distribusi Task per Project</h5>
+              <div class="text-muted small">Ringkasan status task setiap project</div>
+            </div>
+            <div class="text-gray-300">
+              <i class="fas fa-project-diagram fa-2x"></i>
+            </div>
+          </div>
+          <hr class="my-3">
+          <div class="d-flex">
+            <a href="{{ route('reports.task_distribution') }}" class="btn btn-sm btn-warning mr-2">
+              <i class="fas fa-eye"></i> Buka
+            </a>
+            <a href="{{ route('reports.task_distribution.pdf', request()->query()) }}" class="btn btn-sm btn-danger">
+              <i class="fas fa-file-pdf"></i> PDF
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{-- CARD: 9 Produktivitas Mingguan Developer --}}
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Report 9</div>
+              <h5 class="mb-1 font-weight-bold text-gray-800">Produktivitas Mingguan</h5>
+              <div class="text-muted small">Task selesai per developer (periode)</div>
+              <span class="badge badge-light border mt-2">Dengan filter</span>
+            </div>
+            <div class="text-gray-300">
+              <i class="fas fa-calendar-check fa-2x"></i>
+            </div>
+          </div>
+          <hr class="my-3">
+          <div class="d-flex">
+            <a href="{{ route('reports.weekly_productivity') }}" class="btn btn-sm btn-success mr-2">
+              <i class="fas fa-filter"></i> Buka
+            </a>
+            <a href="{{ route('reports.weekly_productivity.pdf', request()->query()) }}" class="btn btn-sm btn-danger">
+              <i class="fas fa-file-pdf"></i> PDF
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 @endsection
