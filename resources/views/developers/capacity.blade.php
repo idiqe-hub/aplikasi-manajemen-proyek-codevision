@@ -71,7 +71,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Overload</div>
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Beban Berlebih</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $summary['overload'] }}</div>
                         <div class="text-muted small">7+ task aktif</div>
                     </div>
@@ -104,8 +104,8 @@
                         <th class="text-center" style="width: 40px;">#</th>
                         <th>Developer</th>
                         <th>Role</th>
-                        <th class="text-center">Todo</th>
-                        <th class="text-center">In Progress</th>
+                        <th class="text-center">Belum Dikerjakan</th>
+                        <th class="text-center">Sedang Dikerjakan</th>
                         <th class="text-center">Done</th>
                         <th class="text-center">Task Aktif</th>
                         <th class="text-center" style="width: 200px;">Beban Kerja</th>
@@ -205,7 +205,7 @@
                 <i class="fas fa-minus-circle mr-1"></i> Normal (4–6 task aktif)
             </span>
             <span class="badge badge-danger px-3 py-1">
-                <i class="fas fa-fire mr-1"></i> Overload (7+ task aktif)
+                <i class="fas fa-fire mr-1"></i> Beban Berlebih (7+ tugas aktif)
             </span>
         </div>
     </div>

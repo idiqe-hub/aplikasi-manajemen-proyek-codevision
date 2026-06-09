@@ -1,11 +1,11 @@
 @extends('layouts.admin')
-@section('title', 'Report Project Aktif')
-@section('page_title', 'Report Project Aktif')
+@section('title', 'Laporan Proyek Aktif')
+@section('page_title', 'Laporan Proyek Aktif')
 
 @section('content')
   <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-      <h6 class="m-0 font-weight-bold text-primary">Project Aktif (planned / on_progress)</h6>
+      <h6 class="m-0 font-weight-bold text-primary">Proyek Aktif (direncanakan / sedang berjalan)</h6>
       <div class="d-flex">
         <a id="btnPdfProjectsActive" class="btn btn-sm btn-danger mr-2"
           href="{{ route('reports.projects_active.pdf', request()->query()) }}">
@@ -42,10 +42,10 @@
         <thead class="thead-dark">
           <tr>
             <th>#</th>
-            <th>Project</th>
+            <th>Proyek</th>
             <th>Client</th>
-            <th>Start</th>
-            <th>Deadline</th>
+            <th>Tanggal Mulai</th>
+            <th>Tenggat Waktu</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -59,7 +59,7 @@
               <td>{{ $p->end_date ?? '-' }}</td>
               <td>
                 <span class="badge badge-{{ $p->status === 'on_progress' ? 'warning' : 'secondary' }}">
-                  {{ $p->status }}
+                  {{ $p->status === 'completed' ? 'Selesai' : ($p->status === 'on_progress' ? 'Sedang Berjalan' : 'Direncanakan') }}
                 </span>
               </td>
             </tr>

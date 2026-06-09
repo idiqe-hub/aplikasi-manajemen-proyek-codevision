@@ -5,8 +5,8 @@
     <tr>
       <th>No</th>
       <th>Developer</th>
-      <th>Task To Do</th>
-      <th>Task In Progress</th>
+      <th>Belum Dikerjakan</th>
+      <th>Sedang Dikerjakan</th>
       <th>Total Aktif</th>
       <th>Task Selesai</th>
       <th>Status Beban</th>
@@ -18,7 +18,7 @@
         $aktif = $dev->active_count;
         if ($aktif <= 3) $status = 'Ringan';
         elseif ($aktif <= 6) $status = 'Normal';
-        else $status = 'Overload';
+        else $status = 'Beban Berlebih';
       @endphp
       <tr>
         <td class="text-center">{{ $i+1 }}</td>

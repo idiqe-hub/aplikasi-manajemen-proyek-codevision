@@ -11,7 +11,7 @@
     <div class="card-body">
         <p><b>Nama:</b> {{ $developer->name }}</p>
         <p><b>Email:</b> {{ $developer->email }}</p>
-        <p><b>Role:</b> {{ $developer->role }}</p>
+        <p><b>Peran:</b> {{ $developer->role }}</p>
         <p><b>Skill:</b> {{ $developer->skill ?? '-' }}</p>
     </div>
 </div>

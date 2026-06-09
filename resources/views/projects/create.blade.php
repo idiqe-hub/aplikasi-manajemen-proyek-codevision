@@ -1,10 +1,10 @@
 @extends('layouts.admin')
 
-@section('title', 'Tambah Project')
-@section('page_title','Tambah Project')
+@section('title', 'Tambah Proyek')
+@section('page_title','Tambah Proyek')
 
 @section('content')
-<h3 class="mb-3">Tambah Project</h3>
+<h3 class="mb-3">Tambah Proyek</h3>
 
 <form action="{{ route('projects.store') }}" method="POST" class="card card-body">
     @csrf

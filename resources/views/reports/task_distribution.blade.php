@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'Report Distribusi Task per Project')
-@section('page_title', 'Report Distribusi Task per Project')
+@section('title', 'Laporan Distribusi Tugas per Proyek')
+@section('page_title', 'Laporan Distribusi Tugas per Proyek')
 
 @section('content')
   <div class="card shadow mb-4">
@@ -23,11 +23,11 @@
         <thead class="thead-dark">
           <tr>
             <th>#</th>
-            <th>Project</th>
-            <th>To Do</th>
-            <th>In Progress</th>
-            <th>Done</th>
-            <th>Total Task</th>
+            <th>Proyek</th>
+            <th>Belum Dikerjakan</th>
+            <th>Sedang Dikerjakan</th>
+            <th>Selesai</th>
+            <th>Total Tugas</th>
             <th>Persentase Selesai</th>
           </tr>
         </thead>

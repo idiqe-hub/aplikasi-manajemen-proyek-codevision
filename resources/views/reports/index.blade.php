@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', 'Reports')
-@section('page_title', 'Reports')
+@section('title', 'Laporan')
+@section('page_title', 'Laporan')
 
 @section('content')
 <div class="container-fluid">
@@ -9,7 +9,7 @@
   {{-- Header --}}
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <div>
-      <h1 class="h3 mb-1 text-gray-800">Reports</h1>
+      <h1 class="h3 mb-1 text-gray-800">Laporan</h1>
       <p class="mb-0 text-muted">Pilih laporan, gunakan filter (jika ada), lalu unduh PDF.</p>
     </div>
     <a href="{{ route('dashboard') }}" class="btn btn-sm btn-secondary">
@@ -32,7 +32,7 @@
           <div class="d-flex align-items-start justify-content-between">
             <div>
               <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Report 1</div>
-              <h5 class="mb-1 font-weight-bold text-gray-800">Project Aktif</h5>
+              <h5 class="mb-1 font-weight-bold text-gray-800">Proyek Aktif</h5>
               <div class="text-muted small">Status: planned / on_progress</div>
               <span class="badge badge-light border mt-2">Dengan filter</span>
             </div>
@@ -62,7 +62,7 @@
           <div class="d-flex align-items-start justify-content-between">
             <div>
               <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Report 2</div>
-              <h5 class="mb-1 font-weight-bold text-gray-800">Task per Developer</h5>
+              <h5 class="mb-1 font-weight-bold text-gray-800">Tugas per Developer</h5>
               <div class="text-muted small">Filter: developer + range tanggal</div>
               <span class="badge badge-light border mt-2">Dengan filter</span>
             </div>
@@ -93,7 +93,7 @@
           <div class="d-flex align-items-start justify-content-between">
             <div>
               <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Report 3</div>
-              <h5 class="mb-1 font-weight-bold text-gray-800">Overdue Task</h5>
+              <h5 class="mb-1 font-weight-bold text-gray-800">Tugas Terlambat</h5>
               <div class="text-muted small">Deadline lewat & status belum selesai</div>
             </div>
             <div class="text-gray-300">

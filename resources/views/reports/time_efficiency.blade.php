@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'Report Tingkat Efisiensi Waktu')
-@section('page_title', 'Report Tingkat Efisiensi Waktu')
+@section('title', 'Laporan Tingkat Efisiensi Waktu')
+@section('page_title', 'Laporan Tingkat Efisiensi Waktu')
 
 @section('content')
   <div class="card shadow mb-4">
@@ -28,7 +28,7 @@
           <input type="date" name="to" class="form-control" value="{{ $to }}">
         </div>
         <div class="col-md-2 form-group d-flex align-items-end">
-          <button class="btn btn-primary btn-block">Filter</button>
+          <button class="btn btn-primary btn-block">Terapkan</button>
         </div>
       </form>
     </div>
@@ -41,7 +41,7 @@
             <th>Task</th>
             <th>Developer</th>
             <th>Estimasi (Jam)</th>
-            <th>Aktual (Jam)</th>
+            <th>Realisasi (Jam)</th>
             <th>Efisiensi (%)</th>
             <th>Status</th>
           </tr>

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'Report Estimasi vs Realisasi')
-@section('page_title', 'Report Estimasi vs Realisasi Jam')
+@section('title', 'Laporan Estimasi vs Realisasi')
+@section('page_title', 'Laporan Estimasi vs Realisasi Jam')
 
 @section('content')
   <div class="card shadow mb-4">
@@ -49,8 +49,8 @@
         <thead class="thead-dark">
           <tr>
             <th>#</th>
-            <th>Task</th>
-            <th>Project</th>
+            <th>Tugas</th>
+            <th>Proyek</th>
             <th>Estimasi</th>
             <th>Realisasi</th>
             <th>Status</th>
@@ -64,7 +64,7 @@
               <td>{{ $t->project?->name ?? '-' }}</td>
               <td>{{ $t->estimated_hours ?? 0 }}</td>
               <td>{{ $t->actual_hours ?? 0 }}</td>
-              <td>{{ $t->status }}</td>
+              <td>{{ $t->status === 'done' ? 'Selesai' : ($t->status === 'in_progress' ? 'Sedang Dikerjakan' : 'Belum Dikerjakan') }}</td>
             </tr>
           @empty
             <tr>

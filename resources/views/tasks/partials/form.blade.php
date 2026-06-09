@@ -6,9 +6,9 @@
 @auth
     @if (auth()->user()->role === 'admin')
         <div class="form-group">
-            <label>Project</label>
+            <label>Proyek</label>
             <select name="project_id" class="form-control" required>
-                <option value="">-- pilih project --</option>
+                <option value="">-- pilih proyek --</option>
                 @foreach ($projects as $p)
                     <option value="{{ $p->id }}" @selected(old('project_id', $task->project_id ?? '') == $p->id)>
                         {{ $p->name }}
@@ -18,7 +18,7 @@
         </div>
     @else
         <div class="form-group">
-            <label>Project</label>
+            <label>Proyek</label>
             <input type="text" class="form-control" value="{{ $task->project?->name ?? '-' }}" readonly>
             <input type="hidden" name="project_id" value="{{ $task->project_id }}">
         </div>
@@ -69,7 +69,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>Developer</th>
-                                <th class="text-center">Task Aktif</th>
+                                <th class="text-center">Tugas Aktif</th>
                                 <th class="text-center">Status</th>
                             </tr>
                         </thead>
@@ -79,7 +79,7 @@
                                     $activeCount = $d->active_count ?? 0;
                                     $badge       = \App\Models\Developer::workloadBadge($activeCount);
                                 @endphp
-                                <tr class="{{ $badge['label'] === 'Overload' ? 'table-danger' : '' }}">
+                                <tr class="{{ $badge['label'] === 'Beban Berlebih' ? 'table-danger' : '' }}">
                                     <td class="font-weight-bold">{{ $d->name }}</td>
                                     <td class="text-center">{{ $activeCount }}</td>
                                     <td class="text-center">
@@ -115,20 +115,20 @@
     <div class="col-md-4 form-group">
         <label>Status</label>
         <select name="status" class="form-control" required>
-            <option value="todo" {{ $statusVal === 'todo' ? 'selected' : '' }}>todo</option>
-            <option value="in_progress" {{ $statusVal === 'in_progress' ? 'selected' : '' }}>in_progress</option>
-            <option value="done" {{ $statusVal === 'done' ? 'selected' : '' }}>done</option>
+        <option value="todo" {{ $statusVal === 'todo' ? 'selected' : '' }}>Belum Dikerjakan</option>
+            <option value="in_progress" {{ $statusVal === 'in_progress' ? 'selected' : '' }}>Sedang Dikerjakan</option>
+            <option value="done" {{ $statusVal === 'done' ? 'selected' : '' }}>Selesai</option>
         </select>
     </div>
 
     <div class="col-md-4 form-group">
-        <label>Progress (0-100)</label>
+        <label>Progres (0-100)</label>
         <input type="number" name="progress" class="form-control" min="0" max="100"
             value="{{ $progressVal }}" required>
     </div>
 
     <div class="col-md-4 form-group">
-        <label>Deadline</label>
+        <label>Tenggat Waktu</label>
         <input type="date" name="deadline" class="form-control"
             value="{{ old('deadline', $task->deadline ?? '') }}">
     </div>

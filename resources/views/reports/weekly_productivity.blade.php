@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'Report Produktivitas Mingguan Developer')
-@section('page_title', 'Report Produktivitas Mingguan Developer')
+@section('title', 'Laporan Produktivitas Mingguan Developer')
+@section('page_title', 'Laporan Produktivitas Mingguan Developer')
 
 @section('content')
   <div class="card shadow mb-4">
@@ -28,7 +28,7 @@
           <input type="date" name="to" class="form-control" value="{{ $to }}">
         </div>
         <div class="col-md-2 form-group d-flex align-items-end">
-          <button class="btn btn-primary btn-block">Filter</button>
+          <button class="btn btn-primary btn-block">Terapkan</button>
         </div>
       </form>
     </div>

@@ -40,7 +40,7 @@
         {{-- Progress Bar --}}
         <div class="mt-2">
             <div class="d-flex justify-content-between" style="font-size: 11px;">
-                <span class="text-muted">Progress</span>
+                <span class="text-muted">Progres</span>
                 <span class="progress-text font-weight-bold">{{ $task->progress }}%</span>
             </div>
             <div class="progress mt-1" style="height: 6px; border-radius: 3px;">

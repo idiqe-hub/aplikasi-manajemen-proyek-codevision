@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'Report Task per Developer')
-@section('page_title', 'Report Task per Developer')
+@section('title', 'Laporan Tugas per Developer')
+@section('page_title', 'Laporan Tugas per Developer')
 
 @section('content')
     <div class="card shadow mb-4">
@@ -43,9 +43,9 @@
             </form>
 
             <div class="mt-2">
-                <span class="badge badge-secondary">todo: {{ $summary['todo'] ?? 0 }}</span>
-                <span class="badge badge-warning">in_progress: {{ $summary['in_progress'] ?? 0 }}</span>
-                <span class="badge badge-success">done: {{ $summary['done'] ?? 0 }}</span>
+                <span class="badge badge-secondary">Belum Dikerjakan: {{ $summary['todo'] ?? 0 }}</span>
+                <span class="badge badge-warning">Sedang Dikerjakan: {{ $summary['in_progress'] ?? 0 }}</span>
+                <span class="badge badge-success">Selesai: {{ $summary['done'] ?? 0 }}</span>
             </div>
         </div>
     </div>
@@ -59,12 +59,12 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>#</th>
-                        <th>Task</th>
-                        <th>Project</th>
+                        <th>Tugas</th>
+                        <th>Proyek</th>
                         <th>Developer</th>
                         <th>Status</th>
-                        <th>Progress</th>
-                        <th>Deadline</th>
+                        <th>Progres</th>
+                        <th>Tenggat Waktu</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,7 +75,7 @@
                             <td>{{ $t->project?->name ?? '-' }}</td>
                             <td>{{ $t->developer?->name ?? '-' }}</td>
                             <td><span
-                                    class="badge badge-{{ $t->status === 'done' ? 'success' : ($t->status === 'in_progress' ? 'warning' : 'secondary') }}">{{ $t->status }}</span>
+                                    class="badge badge-{{ $t->status === 'done' ? 'success' : ($t->status === 'in_progress' ? 'warning' : 'secondary') }}">{{ $t->status === 'done' ? 'Selesai' : ($t->status === 'in_progress' ? 'Sedang Dikerjakan' : 'Belum Dikerjakan') }}</span>
                             </td>
                             <td>{{ $t->progress }}%</td>
                             <td>{{ $t->deadline ?? '-' }}</td>

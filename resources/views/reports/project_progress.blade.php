@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'Report Progress per Project')
-@section('page_title', 'Report Progress per Project')
+@section('title', 'Laporan Progres per Proyek')
+@section('page_title', 'Laporan Progres per Proyek')
 
 @section('content')
   <div class="card shadow mb-4">
@@ -43,11 +43,11 @@
       <table class="table table-bordered table-hover">
         <thead class="thead-dark">
           <tr>
-            <th>Project</th>
+            <th>Proyek</th>
             <th>Status</th>
-            <th>Total Task</th>
-            <th>Done</th>
-            <th>Avg Progress</th>
+            <th>Total Tugas</th>
+            <th>Selesai</th>
+            <th>Rata-rata Progres</th>
           </tr>
         </thead>
         <tbody>

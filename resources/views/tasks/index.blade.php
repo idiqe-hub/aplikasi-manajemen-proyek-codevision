@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title','Data Task')
-@section('page_title','Data Task')
+@section('title','Data Tugas')
+@section('page_title','Data Tugas')
 
 @php
   $statusBadge = fn($s) => $s==='done' ? 'success' : ($s==='in_progress' ? 'warning' : 'secondary');
@@ -9,13 +9,13 @@
 @section('content')
 <div class="card shadow mb-4">
   <div class="card-header py-3 d-flex justify-content-between align-items-center">
-    <h6 class="m-0 font-weight-bold text-primary">Data Task</h6>
+    <h6 class="m-0 font-weight-bold text-primary">Data Tugas</h6>
     <div>
       <a href="{{ route('tasks.kanban') }}" class="btn btn-secondary btn-sm mr-1">
         <i class="fas fa-columns"></i> Tampilan Kanban
       </a>
       <a href="{{ route('tasks.create') }}" class="btn btn-primary btn-sm">
-        <i class="fas fa-plus"></i> Tambah Task
+        <i class="fas fa-plus"></i> Tambah Tugas
       </a>
     </div>
   </div>
@@ -27,11 +27,11 @@
           <tr>
             <th>#</th>
             <th>Judul</th>
-            <th>Project</th>
+            <th>Proyek</th>
             <th>Developer</th>
             <th>Status</th>
-            <th>Progress</th>
-            <th>Deadline</th>
+            <th>Progres</th>
+            <th>Tenggat Waktu</th>
             <th style="width:220px;">Aksi</th>
           </tr>
         </thead>
@@ -42,7 +42,7 @@
               <td class="font-weight-bold">{{ $t->title }}</td>
               <td>{{ $t->project?->name ?? '-' }}</td>
               <td>{{ $t->developer?->name ?? '-' }}</td>
-              <td><span class="badge badge-{{ $statusBadge($t->status) }}">{{ $t->status }}</span></td>
+              <td><span class="badge badge-{{ $statusBadge($t->status) }}">{{ $t->status === 'done' ? 'Selesai' : ($t->status === 'in_progress' ? 'Sedang Dikerjakan' : 'Belum Dikerjakan') }}</span></td>
               <td>
                 <div class="progress" style="height: 18px;">
                   <div class="progress-bar" role="progressbar" style="width: {{ $t->progress }}%;">
@@ -53,7 +53,7 @@
               <td>{{ $t->deadline ?? '-' }}</td>
               <td>
                 <a href="/tasks/{{ $t->id }}" class="btn btn-sm btn-outline-dark">Detail</a>
-                <a href="{{ route('tasks.edit',$t) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a href="{{ route('tasks.edit',$t) }}" class="btn btn-sm btn-outline-primary">Ubah</a>
                 <form action="{{ route('tasks.destroy',$t) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('Yakin hapus task ini?')">
                   @csrf
@@ -63,7 +63,7 @@
               </td>
             </tr>
           @empty
-            <tr><td colspan="8" class="text-center py-4">Data task belum ada.</td></tr>
+            <tr><td colspan="8" class="text-center py-4">Data tugas belum tersedia.</td></tr>
           @endforelse
         </tbody>
       </table>

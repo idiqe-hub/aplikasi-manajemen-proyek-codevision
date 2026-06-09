@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title','Detail Task')
-@section('page_title','Detail Task')
+@section('title','Detail Tugas')
+@section('page_title','Detail Tugas')
 
 @section('content')
 
@@ -9,10 +9,10 @@
     <div class="col-lg-7">
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">Informasi Task</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Informasi Tugas</h6>
                 <div>
                     <a href="{{ route('tasks.edit', $task) }}" class="btn btn-primary btn-sm mr-1">
-                        <i class="fas fa-edit"></i> Edit
+                        <i class="fas fa-edit"></i> Ubah
                     </a>
                     <a href="{{ route('tasks.index') }}" class="btn btn-secondary btn-sm">
                         <i class="fas fa-arrow-left"></i> Kembali
@@ -24,7 +24,7 @@
                     <dt class="col-sm-4 text-muted">Judul</dt>
                     <dd class="col-sm-8 font-weight-bold">{{ $task->title }}</dd>
 
-                    <dt class="col-sm-4 text-muted">Project</dt>
+                    <dt class="col-sm-4 text-muted">Proyek</dt>
                     <dd class="col-sm-8">{{ $task->project?->name ?? '-' }}</dd>
 
                     <dt class="col-sm-4 text-muted">Developer</dt>
@@ -33,11 +33,11 @@
                     <dt class="col-sm-4 text-muted">Status</dt>
                     <dd class="col-sm-8">
                         <span class="badge {{ $task->status === 'done' ? 'badge-success' : ($task->status === 'in_progress' ? 'badge-warning' : 'badge-secondary') }}">
-                            {{ strtoupper(str_replace('_', ' ', $task->status)) }}
+                            {{ $task->status === 'done' ? 'Selesai' : ($task->status === 'in_progress' ? 'Sedang Dikerjakan' : 'Belum Dikerjakan') }}
                         </span>
                     </dd>
 
-                    <dt class="col-sm-4 text-muted">Progress</dt>
+                    <dt class="col-sm-4 text-muted">Progres</dt>
                     <dd class="col-sm-8">
                         <div class="d-flex align-items-center">
                             <div class="progress flex-grow-1 mr-2" style="height: 10px;">
@@ -50,14 +50,14 @@
                         </div>
                     </dd>
 
-                    <dt class="col-sm-4 text-muted">Deadline</dt>
+                    <dt class="col-sm-4 text-muted">Tenggat Waktu</dt>
                     <dd class="col-sm-8">
                         @if($task->deadline)
                             @php $isOverdue = $task->status !== 'done' && $task->deadline < now()->toDateString(); @endphp
                             <span class="{{ $isOverdue ? 'text-danger font-weight-bold' : '' }}">
                                 {{ \Carbon\Carbon::parse($task->deadline)->format('d M Y') }}
                                 @if($isOverdue)
-                                    <i class="fas fa-exclamation-triangle ml-1" title="Overdue"></i>
+                                    <i class="fas fa-exclamation-triangle ml-1" title="Terlambat"></i>
                                 @endif
                             </span>
                         @else

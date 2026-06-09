@@ -19,7 +19,7 @@
                     <th>#</th>
                     <th>Nama</th>
                     <th>Email</th>
-                    <th>Role</th>
+                    <th>Peran</th>
                     <th>Skill</th>
                     <th style="width:220px;">Aksi</th>
                 </tr>
@@ -34,7 +34,7 @@
                         <td>{{ $d->skill ?? '-' }}</td>
                         <td>
                             <a href="{{ route('developers.show',$d) }}" class="btn btn-sm btn-outline-dark">Detail</a>
-                            <a href="{{ route('developers.edit',$d) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a href="{{ route('developers.edit',$d) }}" class="btn btn-sm btn-outline-primary">Ubah</a>
                             <form action="{{ route('developers.destroy',$d) }}" method="POST" class="d-inline"
                                   onsubmit="return confirm('Yakin hapus developer ini?')">
                                 @csrf

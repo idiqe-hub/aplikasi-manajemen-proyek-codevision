@@ -25,7 +25,7 @@
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Projects</div>
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Proyek</div>
               <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalProjects }}</div>
             </div>
             <div class="col-auto">
@@ -44,9 +44,9 @@
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks</div>
+              <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tugas</div>
               <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalTasks }}</div>
-              <div class="text-muted small mt-1">Done: {{ $doneTasks }} ({{ $doneRate }}%)</div>
+              <div class="text-muted small mt-1">Selesai: {{ $doneTasks }} ({{ $doneRate }}%)</div>
             </div>
             <div class="col-auto">
               <i class="fas fa-tasks fa-2x text-gray-300"></i>
@@ -71,7 +71,7 @@
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Developers</div>
+              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Developer</div>
               <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalDevelopers }}</div>
             </div>
             <div class="col-auto">
@@ -90,9 +90,9 @@
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Overdue</div>
+              <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Terlambat</div>
               <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $overdueCount }}</div>
-              <div class="text-muted small mt-1">Deadline lewat & belum done</div>
+              <div class="text-muted small mt-1">Tenggat waktu lewat & belum selesai</div>
             </div>
             <div class="col-auto">
               <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
@@ -114,7 +114,7 @@
     <div class="col-lg-6 mb-4">
       <div class="card shadow">
         <div class="card-header d-flex justify-content-between align-items-center">
-          <h6 class="m-0 font-weight-bold text-danger">Overdue Tasks (Top 8)</h6>
+          <h6 class="m-0 font-weight-bold text-danger">Tugas Terlambat (Top 8)</h6>
           <a href="{{ route('reports.tasks_overdue') }}" class="btn btn-sm btn-danger">
             <i class="fas fa-eye"></i> Buka Report
           </a>
@@ -123,10 +123,10 @@
           <table class="table table-bordered table-hover mb-0">
             <thead class="thead-light">
               <tr>
-                <th>Task</th>
-                <th>Project</th>
+                <th>Tugas</th>
+                <th>Proyek</th>
                 <th>Developer</th>
-                <th class="text-center">Deadline</th>
+                <th class="text-center">Tenggat Waktu</th>
               </tr>
             </thead>
             <tbody>
@@ -138,7 +138,7 @@
                   <td class="text-center">{{ $t->deadline }}</td>
                 </tr>
               @empty
-                <tr><td colspan="4" class="text-center text-muted">Tidak ada overdue task.</td></tr>
+                <tr><td colspan="4" class="text-center text-muted">Tidak ada tugas yang terlambat.</td></tr>
               @endforelse
             </tbody>
           </table>
@@ -150,19 +150,19 @@
     <div class="col-lg-6 mb-4">
       <div class="card shadow">
         <div class="card-header d-flex justify-content-between align-items-center">
-          <h6 class="m-0 font-weight-bold text-primary">Task Terbaru (Top 8)</h6>
+          <h6 class="m-0 font-weight-bold text-primary">Tugas Terbaru (Top 8)</h6>
           <a href="{{ route('tasks.index') }}" class="btn btn-sm btn-primary">
-            <i class="fas fa-list"></i> Data Task
+            <i class="fas fa-list"></i> Data Tugas
           </a>
         </div>
         <div class="card-body table-responsive">
           <table class="table table-bordered table-hover mb-0">
             <thead class="thead-light">
               <tr>
-                <th>Task</th>
-                <th>Project</th>
+                <th>Tugas</th>
+                <th>Proyek</th>
                 <th class="text-center">Status</th>
-                <th class="text-center">Progress</th>
+                <th class="text-center">Progres</th>
               </tr>
             </thead>
             <tbody>
@@ -170,7 +170,7 @@
                 <tr>
                   <td>{{ $t->title }}</td>
                   <td>{{ $t->project?->name ?? '-' }}</td>
-                  <td class="text-center">{{ strtoupper($t->status) }}</td>
+                  <td class="text-center">{{ $t->status === 'done' ? 'Selesai' : ($t->status === 'in_progress' ? 'Sedang Dikerjakan' : 'Belum Dikerjakan') }}</td>
                   <td class="text-center">{{ $t->progress }}%</td>
                 </tr>
               @empty

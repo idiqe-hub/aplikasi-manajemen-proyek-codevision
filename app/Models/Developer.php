@@ -61,7 +61,7 @@ class Developer extends Model
     public static function workloadBadge(int $activeCount): array
     {
         return match (self::workloadStatus($activeCount)) {
-            'overload' => ['label' => 'Overload',  'class' => 'badge-danger',   'icon' => 'fa-fire'],
+            'overload' => ['label' => 'Beban Berlebih',  'class' => 'badge-danger',   'icon' => 'fa-fire'],
             'normal'   => ['label' => 'Normal',    'class' => 'badge-warning',  'icon' => 'fa-minus-circle'],
             default    => ['label' => 'Ringan',    'class' => 'badge-success',  'icon' => 'fa-check-circle'],
         };

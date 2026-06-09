@@ -24,8 +24,8 @@
           <tr>
             <th>#</th>
             <th>Developer</th>
-            <th>Task To Do</th>
-            <th>Task In Progress</th>
+            <th>Belum Dikerjakan</th>
+            <th>Sedang Dikerjakan</th>
             <th>Total Aktif</th>
             <th>Task Selesai</th>
             <th>Status Beban</th>
@@ -42,7 +42,7 @@
                   $status = 'Normal';
                   $badge = 'info';
               } else {
-                  $status = 'Overload';
+                  $status = 'Beban Berlebih';
                   $badge = 'danger';
               }
             @endphp

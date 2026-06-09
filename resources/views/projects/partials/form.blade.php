@@ -4,7 +4,7 @@
 @endphp
 
 <div class="mb-3">
-    <label class="form-label">Nama Project</label>
+    <label class="form-label">Nama Proyek</label>
     <input type="text" name="name" class="form-control"
            value="{{ old('name', $project->name ?? '') }}" required>
 </div>
@@ -29,7 +29,7 @@
                value="{{ old('start_date', $project->start_date ?? '') }}">
     </div>
     <div class="col-md-6 mb-3">
-        <label class="form-label">Deadline</label>
+        <label class="form-label">Tenggat Waktu</label>
         <input type="date" name="end_date" class="form-control"
                value="{{ old('end_date', $project->end_date ?? '') }}">
     </div>
@@ -38,9 +38,9 @@
 <div class="mb-3">
     <label class="form-label">Status</label>
     <select name="status" class="form-select" required>
-        <option value="planned" {{ $statusVal==='planned' ? 'selected' : '' }}>planned</option>
-        <option value="on_progress" {{ $statusVal==='on_progress' ? 'selected' : '' }}>on_progress</option>
-        <option value="completed" {{ $statusVal==='completed' ? 'selected' : '' }}>completed</option>
+        <option value="planned" {{ $statusVal==='planned' ? 'selected' : '' }}>Direncanakan</option>
+        <option value="on_progress" {{ $statusVal==='on_progress' ? 'selected' : '' }}>Sedang Berjalan</option>
+        <option value="completed" {{ $statusVal==='completed' ? 'selected' : '' }}>Selesai</option>
     </select>
 </div>
 

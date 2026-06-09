@@ -51,7 +51,7 @@
                 $badgeLabel  = match($warningType) {
                     'h-1'     => 'H-1',
                     'h-3'     => 'H-3',
-                    'overdue' => 'Overdue',
+                    'overdue' => 'Terlambat',
                     default   => 'Info',
                 };
             @endphp

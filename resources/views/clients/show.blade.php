@@ -9,7 +9,7 @@
     </h4>
     <div>
         <a href="{{ route('clients.edit', $client) }}" class="btn btn-outline-primary btn-sm">
-            <i class="fas fa-edit"></i> Edit
+            <i class="fas fa-edit"></i> Ubah
         </a>
         <a href="{{ route('clients.index') }}" class="btn btn-secondary btn-sm">
             <i class="fas fa-arrow-left"></i> Kembali
@@ -61,10 +61,10 @@
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">
                     <i class="fas fa-folder-open mr-1"></i>
-                    Project Client ({{ $client->projects->count() }})
+                    Proyek Client ({{ $client->projects->count() }})
                 </h6>
                 <a href="{{ route('projects.create') }}" class="btn btn-sm btn-primary">
-                    <i class="fas fa-plus"></i> Tambah Project
+                    <i class="fas fa-plus"></i> Tambah Proyek
                 </a>
             </div>
             <div class="card-body p-0">
@@ -72,10 +72,10 @@
                     <table class="table table-hover mb-0">
                         <thead class="thead-light">
                             <tr>
-                                <th>Nama Project</th>
+                                <th>Nama Proyek</th>
                                 <th>Status</th>
                                 <th>Mulai</th>
-                                <th>Deadline</th>
+                                <th>Tenggat Waktu</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -86,7 +86,7 @@
                                     <td>
                                         <span class="badge
                                             {{ $project->status === 'completed' ? 'badge-success' : ($project->status === 'on_progress' ? 'badge-warning' : 'badge-secondary') }}">
-                                            {{ $project->status }}
+                                            {{ $project->status === 'completed' ? 'Selesai' : ($project->status === 'on_progress' ? 'Sedang Berjalan' : 'Direncanakan') }}
                                         </span>
                                     </td>
                                     <td>{{ $project->start_date ?? '-' }}</td>

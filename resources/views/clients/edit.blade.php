@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'Edit Client — ' . $client->name)
-@section('page_title', 'Edit Client')
+@section('title', 'Ubah Client — ' . $client->name)
+@section('page_title', 'Ubah Client')
 
 @section('content')
 <div class="row justify-content-center">
@@ -8,7 +8,7 @@
         <div class="card shadow">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">
-                    <i class="fas fa-user-edit mr-2"></i>Edit Client: {{ $client->name }}
+                    <i class="fas fa-user-edit mr-2"></i>Ubah Data Client: {{ $client->name }}
                 </h6>
             </div>
             <div class="card-body">
@@ -80,7 +80,7 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save mr-1"></i> Update
+                            <i class="fas fa-save mr-1"></i> Perbarui
                         </button>
                         <a href="{{ route('clients.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left mr-1"></i> Kembali
