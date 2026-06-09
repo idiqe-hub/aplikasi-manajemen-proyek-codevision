@@ -142,7 +142,7 @@
                     <li class="nav-item {{ request()->routeIs('tasks.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('tasks.index') }}">
                             <i class="fas fa-fw fa-tasks"></i>
-                            <span>Tasks</span>
+                            <span>Data Tugas</span>
                         </a>
                     </li>
                 @endif
@@ -154,21 +154,21 @@
                     <li class="nav-item {{ request()->routeIs('projects.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('projects.index') }}">
                             <i class="fas fa-fw fa-folder"></i>
-                            <span>Projects</span>
+                            <span>Data Proyek</span>
                         </a>
                     </li>
 
                     <li class="nav-item {{ request()->routeIs('clients.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('clients.index') }}">
                             <i class="fas fa-fw fa-user-tie"></i>
-                            <span>Clients</span>
+                            <span>Data Client</span>
                         </a>
                     </li>
 
                     <li class="nav-item {{ request()->routeIs('developers.index', 'developers.show', 'developers.create', 'developers.edit') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('developers.index') }}">
                             <i class="fas fa-fw fa-users"></i>
-                            <span>Developers</span>
+                            <span>Data Developer</span>
                         </a>
                     </li>
 
@@ -182,7 +182,7 @@
                     <li class="nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('reports.index') }}">
                             <i class="fas fa-fw fa-chart-bar"></i>
-                            <span>Reports</span>
+                            <span>Laporan</span>
                         </a>
                     </li>
                 @endif
