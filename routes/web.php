@@ -8,12 +8,22 @@ use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ClientDashboardController;
+use App\Http\Controllers\DeveloperCapacityController;
+use App\Http\Controllers\TaskCommentController;
+use App\Http\Controllers\NotificationController;
 
 
 Route::get('/', function () {
-    return auth()->check()
-        ? redirect()->route('dashboard')
-        : redirect()->route('login');
+    if (!auth()->check()) {
+        return redirect()->route('login');
+    }
+    // Arahkan sesuai role
+    return match (auth()->user()->role) {
+        'client' => redirect()->route('client.dashboard'),
+        default  => redirect()->route('dashboard'),
+    };
 })->name('home');
 
 
@@ -23,7 +33,14 @@ Route::middleware(['auth', 'role:admin,developer'])->group(function () {
     // ADMIN ONLY
     Route::middleware('role:admin')->group(function () {
         Route::resource('projects', ProjectController::class);
+
+        // PENTING: route statis /developers/capacity harus SEBELUM resource
+        // agar tidak konflik dengan route developers.show ({developer} = 'capacity')
+        Route::get('/developers/capacity', [DeveloperCapacityController::class, 'index'])
+             ->name('developers.capacity');
         Route::resource('developers', DeveloperController::class);
+
+        Route::resource('clients', ClientController::class);
         Route::put('/developers/{developer}/reset-password', [\App\Http\Controllers\DeveloperController::class, 'resetPassword'])
             ->name('developers.reset-password');
 
@@ -39,16 +56,43 @@ Route::middleware(['auth', 'role:admin,developer'])->group(function () {
             Route::get('/project-progress/pdf', [ReportController::class, 'pdfProjectProgress'])->name('project_progress.pdf');
             Route::get('/hours-summary', [ReportController::class, 'hoursSummary'])->name('hours_summary');
             Route::get('/hours-summary/pdf', [ReportController::class, 'pdfHoursSummary'])->name('hours_summary.pdf');
+
+            // 6) Laporan Beban Kerja Developer / Workload Analytics
+            Route::get('/workload', [ReportController::class, 'workloadAnalytics'])->name('workload');
+            Route::get('/workload/pdf', [ReportController::class, 'pdfWorkloadAnalytics'])->name('workload.pdf');
+
+            // 7) Laporan Tingkat Efisiensi Waktu / Time Efficiency Rate
+            Route::get('/time-efficiency', [ReportController::class, 'timeEfficiencyRate'])->name('time_efficiency');
+            Route::get('/time-efficiency/pdf', [ReportController::class, 'pdfTimeEfficiencyRate'])->name('time_efficiency.pdf');
+
+            // 8) Laporan Ringkasan Distribusi Task per Project
+            Route::get('/task-distribution', [ReportController::class, 'taskDistribution'])->name('task_distribution');
+            Route::get('/task-distribution/pdf', [ReportController::class, 'pdfTaskDistribution'])->name('task_distribution.pdf');
+
+            // 9) Laporan Produktivitas Mingguan Developer
+            Route::get('/weekly-productivity', [ReportController::class, 'weeklyProductivity'])->name('weekly_productivity');
+            Route::get('/weekly-productivity/pdf', [ReportController::class, 'pdfWeeklyProductivity'])->name('weekly_productivity.pdf');
         });
     });
 
     Route::middleware('role:admin,developer')->group(function () {
+        Route::get('/tasks/kanban', [TaskController::class, 'kanban'])->name('tasks.kanban');
+        Route::patch('/tasks/{task}/kanban-status', [TaskController::class, 'updateStatus'])->name('tasks.kanban.status');
+        
         Route::resource('tasks', TaskController::class);
+        Route::post('/tasks/{task}/comments', [TaskCommentController::class, 'store'])->name('tasks.comments.store');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Notifikasi — bisa diakses Admin dan Developer (bukan Client)
+    Route::middleware('role:admin,developer')->group(function () {
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.readAll');
+    });
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -59,3 +103,12 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+
+// ================================================================
+// Route khusus CLIENT — read-only, tidak bisa akses menu admin
+// ================================================================
+Route::middleware(['auth', 'role:client'])->group(function () {
+    Route::get('/client/dashboard', [ClientDashboardController::class, 'index'])
+         ->name('client.dashboard');
+});

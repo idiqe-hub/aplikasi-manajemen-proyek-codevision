@@ -30,6 +30,24 @@ class User extends Authenticatable
     }
 
     /**
+     * User dengan role 'client' terhubung ke satu data client.
+     */
+    public function client()
+    {
+        return $this->hasOne(\App\Models\Client::class, 'user_id');
+    }
+
+    public function taskActivityLogs()
+    {
+        return $this->hasMany(\App\Models\TaskActivityLog::class);
+    }
+
+    public function taskComments()
+    {
+        return $this->hasMany(\App\Models\TaskComment::class);
+    }
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>

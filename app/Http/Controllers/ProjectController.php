@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
@@ -15,17 +16,19 @@ class ProjectController extends Controller
 
     public function create()
     {
-        return view('projects.create');
+        $clients = Client::orderBy('name')->get();
+        return view('projects.create', compact('clients'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required','string','max:255'],
+            'client_id'   => ['nullable', 'exists:clients,id'],
+            'name'        => ['required','string','max:255'],
             'client_name' => ['nullable','string','max:255'],
-            'start_date' => ['nullable','date'],
-            'end_date' => ['nullable','date','after_or_equal:start_date'],
-            'status' => ['required','in:planned,on_progress,completed'],
+            'start_date'  => ['nullable','date'],
+            'end_date'    => ['nullable','date','after_or_equal:start_date'],
+            'status'      => ['required','in:planned,on_progress,completed'],
             'description' => ['nullable','string'],
         ]);
 
@@ -43,17 +46,19 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        return view('projects.edit', compact('project'));
+        $clients = Client::orderBy('name')->get();
+        return view('projects.edit', compact('project', 'clients'));
     }
 
     public function update(Request $request, Project $project)
     {
         $validated = $request->validate([
-            'name' => ['required','string','max:255'],
+            'client_id'   => ['nullable', 'exists:clients,id'],
+            'name'        => ['required','string','max:255'],
             'client_name' => ['nullable','string','max:255'],
-            'start_date' => ['nullable','date'],
-            'end_date' => ['nullable','date','after_or_equal:start_date'],
-            'status' => ['required','in:planned,on_progress,completed'],
+            'start_date'  => ['nullable','date'],
+            'end_date'    => ['nullable','date','after_or_equal:start_date'],
+            'status'      => ['required','in:planned,on_progress,completed'],
             'description' => ['nullable','string'],
         ]);
 

@@ -10,6 +10,7 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
+        'client_id',
         'name',
         'client_name',
         'start_date',
@@ -21,5 +22,13 @@ class Project extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    /**
+     * Project dimiliki oleh satu client.
+     */
+    public function client()
+    {
+        return $this->belongsTo(\App\Models\Client::class);
     }
 }

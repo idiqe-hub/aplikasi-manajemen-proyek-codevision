@@ -1,5 +1,6 @@
 @php
-    $statusVal = old('status', $project->status ?? 'planned');
+    $statusVal   = old('status', $project->status ?? 'planned');
+    $clientIdVal = old('client_id', $project->client_id ?? '');
 @endphp
 
 <div class="mb-3">
@@ -10,8 +11,15 @@
 
 <div class="mb-3">
     <label class="form-label">Client</label>
-    <input type="text" name="client_name" class="form-control"
-           value="{{ old('client_name', $project->client_name ?? '') }}">
+    <select name="client_id" class="form-select">
+        <option value="">— Pilih Client (opsional) —</option>
+        @foreach($clients ?? [] as $c)
+            <option value="{{ $c->id }}" {{ $clientIdVal == $c->id ? 'selected' : '' }}>
+                {{ $c->name }}@if($c->company) — {{ $c->company }}@endif
+            </option>
+        @endforeach
+    </select>
+    <small class="text-muted">Pilih client pemilik project ini. Kosongkan jika belum ada.</small>
 </div>
 
 <div class="row">

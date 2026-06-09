@@ -33,7 +33,7 @@
                             <tr>
                                 <td>{{ ($projects->currentPage() - 1) * $projects->perPage() + $loop->iteration }}</td>
                                 <td class="fw-semibold">{{ $p->name }}</td>
-                                <td>{{ $p->client_name ?? '-' }}</td>
+                                <td>{{ $p->client?->name ?? ($p->client_name ?? '-') }}</td>
                                 <td>{{ $p->start_date ?? '-' }}</td>
                                 <td>{{ $p->end_date ?? '-' }}</td>
                                 <td>

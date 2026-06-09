@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\Project;
 use App\Models\Developer;
+use App\Models\TaskActivityLog;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -42,12 +43,87 @@ class TaskController extends Controller
         return view('tasks.index', compact('tasks'));
     }
 
+    public function kanban()
+    {
+        $query = Task::with(['project', 'developer'])->withCount('comments');
+
+        $user = auth()->user();
+
+        if ($user->role === 'developer') {
+            $developer = $user->developer;
+            if (!$developer) {
+                return redirect()->route('pending')
+                    ->with('error', 'Akun developer belum terhubung.');
+            }
+            $query->where('developer_id', $developer->id);
+        }
+
+        $tasks = $query->get();
+
+        // Kelompokkan berdasarkan status
+        $kanban = [
+            'todo' => $tasks->where('status', 'todo'),
+            'in_progress' => $tasks->where('status', 'in_progress'),
+            'done' => $tasks->where('status', 'done'),
+        ];
+
+        return view('tasks.kanban', compact('kanban'));
+    }
+
+    public function updateStatus(Request $request, Task $task)
+    {
+        $this->authorizeDeveloper($task);
+
+        $request->validate([
+            'status' => 'required|in:todo,in_progress,done'
+        ]);
+
+        $oldStatus = $task->status;
+        $newStatus = $request->status;
+
+        if ($oldStatus === $newStatus) {
+            return response()->json(['success' => true]);
+        }
+
+        $oldProgress = $task->progress;
+        $newProgress = $task->progress;
+
+        if ($newStatus === 'done') {
+            $newProgress = 100;
+        }
+
+        $task->update([
+            'status' => $newStatus,
+            'progress' => $newProgress,
+        ]);
+
+        // Simpan log aktivitas
+        TaskActivityLog::create([
+            'task_id'      => $task->id,
+            'user_id'      => auth()->id(),
+            'old_status'   => $oldStatus,
+            'new_status'   => $newStatus,
+            'old_progress' => $oldProgress,
+            'new_progress' => $newProgress,
+            'note'         => 'Memindahkan task di Kanban Board',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'new_progress' => $newProgress
+        ]);
+    }
+
 
 
     public function create()
     {
         $projects = Project::orderBy('name')->get();
-        $developers = Developer::orderBy('name')->get();
+
+        // Ambil semua developer + hitung task aktif (todo+in_progress) untuk info workload
+        $developers = Developer::withCount([
+            'tasks as active_count' => fn($q) => $q->whereIn('status', ['todo', 'in_progress']),
+        ])->orderBy('name')->get();
 
         return view('tasks.create', compact('projects', 'developers'));
     }
@@ -91,6 +167,19 @@ class TaskController extends Controller
     {
         $this->authorizeDeveloper($task);
 
+        $task->load([
+            'activityLogs' => function ($query) {
+                $query->latest();
+            }, 
+            'activityLogs.user', 
+            'comments' => function ($query) {
+                $query->oldest(); // kronologis dari lama ke baru
+            }, 
+            'comments.user', 
+            'project', 
+            'developer'
+        ]);
+
         return view('tasks.show', compact('task'));
     }
 
@@ -98,7 +187,11 @@ class TaskController extends Controller
     public function edit(Task $task)
     {
         $projects = Project::orderBy('name')->get();
-        $developers = Developer::orderBy('name')->get();
+
+        // Ambil semua developer + hitung task aktif untuk info workload
+        $developers = Developer::withCount([
+            'tasks as active_count' => fn($q) => $q->whereIn('status', ['todo', 'in_progress']),
+        ])->orderBy('name')->get();
 
         return view('tasks.edit', compact('task', 'projects', 'developers'));
     }
@@ -138,7 +231,23 @@ class TaskController extends Controller
             $data['estimated_hours'] = $task->estimated_hours;
         }
 
+        $oldStatus = $task->status;
+        $oldProgress = $task->progress;
+
         $task->update($data);
+
+        // Catat log jika ada perubahan status atau progress
+        if ($oldStatus !== $task->status || $oldProgress != $task->progress) {
+            TaskActivityLog::create([
+                'task_id'      => $task->id,
+                'user_id'      => auth()->id(),
+                'old_status'   => $oldStatus,
+                'new_status'   => $task->status,
+                'old_progress' => $oldProgress,
+                'new_progress' => $task->progress,
+                'note'         => 'Diperbarui melalui form edit task',
+            ]);
+        }
 
         return redirect()->route('tasks.index')
             ->with('success', 'Task berhasil diperbarui.');

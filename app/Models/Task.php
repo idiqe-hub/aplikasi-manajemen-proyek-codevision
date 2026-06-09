@@ -30,4 +30,14 @@ class Task extends Model
     {
         return $this->belongsTo(Developer::class);
     }
+
+    public function activityLogs()
+    {
+        return $this->hasMany(TaskActivityLog::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(TaskComment::class);
+    }
 }

@@ -10,9 +10,14 @@
 <div class="card shadow mb-4">
   <div class="card-header py-3 d-flex justify-content-between align-items-center">
     <h6 class="m-0 font-weight-bold text-primary">Data Task</h6>
-    <a href="{{ route('tasks.create') }}" class="btn btn-primary btn-sm">
-      <i class="fas fa-plus"></i> Tambah Task
-    </a>
+    <div>
+      <a href="{{ route('tasks.kanban') }}" class="btn btn-secondary btn-sm mr-1">
+        <i class="fas fa-columns"></i> Tampilan Kanban
+      </a>
+      <a href="{{ route('tasks.create') }}" class="btn btn-primary btn-sm">
+        <i class="fas fa-plus"></i> Tambah Task
+      </a>
+    </div>
   </div>
 
   <div class="card-body">
@@ -47,7 +52,7 @@
               </td>
               <td>{{ $t->deadline ?? '-' }}</td>
               <td>
-                <a href="{{ route('tasks.show',$t) }}" class="btn btn-sm btn-outline-dark">Detail</a>
+                <a href="/tasks/{{ $t->id }}" class="btn btn-sm btn-outline-dark">Detail</a>
                 <a href="{{ route('tasks.edit',$t) }}" class="btn btn-sm btn-outline-primary">Edit</a>
                 <form action="{{ route('tasks.destroy',$t) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('Yakin hapus task ini?')">

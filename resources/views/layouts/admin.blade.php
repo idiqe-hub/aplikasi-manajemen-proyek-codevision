@@ -12,6 +12,9 @@
     <link href="{{ asset('sbadmin2/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('sbadmin2/css/custom.css') }}" rel="stylesheet">
 
+    {{-- CSRF Token untuk AJAX --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <style>
         /* Sidebar solid */
         .sidebar-solid {
@@ -114,40 +117,97 @@
 
 
             <hr class="sidebar-divider my-0">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('dashboard') }}">
+
+            {{-- Menu Dashboard --}}
+            <li class="nav-item {{ request()->routeIs('dashboard', 'client.dashboard') ? 'active' : '' }}">
+                @auth
+                    @if(auth()->user()->role === 'client')
+                        <a class="nav-link" href="{{ route('client.dashboard') }}">
+                    @else
+                        <a class="nav-link" href="{{ route('dashboard') }}">
+                    @endif
+                @endauth
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
-                </a>
+                    </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('tasks.index') }}">
-                    <i class="fas fa-fw fa-tasks"></i>
-                    <span>Tasks</span>
-                </a>
-            </li>
+
             @auth
-                @if (auth()->user()->role === 'admin')
-                    <li class="nav-item">
+                @php $role = auth()->user()->role; @endphp
+
+                {{-- ============================================
+                     MENU ADMIN & DEVELOPER
+                     ============================================ --}}
+                @if($role === 'admin' || $role === 'developer')
+                    <li class="nav-item {{ request()->routeIs('tasks.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('tasks.index') }}">
+                            <i class="fas fa-fw fa-tasks"></i>
+                            <span>Tasks</span>
+                        </a>
+                    </li>
+                @endif
+
+                {{-- ============================================
+                     MENU ADMIN ONLY
+                     ============================================ --}}
+                @if($role === 'admin')
+                    <li class="nav-item {{ request()->routeIs('projects.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('projects.index') }}">
                             <i class="fas fa-fw fa-folder"></i>
                             <span>Projects</span>
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item {{ request()->routeIs('clients.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('clients.index') }}">
+                            <i class="fas fa-fw fa-user-tie"></i>
+                            <span>Clients</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ request()->routeIs('developers.index', 'developers.show', 'developers.create', 'developers.edit') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('developers.index') }}">
                             <i class="fas fa-fw fa-users"></i>
                             <span>Developers</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+
+                    <li class="nav-item {{ request()->routeIs('developers.capacity') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('developers.capacity') }}">
+                            <i class="fas fa-fw fa-tachometer-alt"></i>
+                            <span>Kapasitas Developer</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('reports.index') }}">
                             <i class="fas fa-fw fa-chart-bar"></i>
                             <span>Reports</span>
                         </a>
                     </li>
                 @endif
+
+                {{-- Menu Notifikasi: Admin dan Developer saja --}}
+                @if(in_array($role, ['admin', 'developer']))
+                    <li class="nav-item {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('notifications.index') }}">
+                            <i class="fas fa-fw fa-bell"></i>
+                            <span>Notifikasi</span>
+                            @php $nb = auth()->user()->unreadNotifications->count(); @endphp
+                            @if($nb > 0)
+                                <span class="badge badge-danger ml-1">{{ $nb > 9 ? '9+' : $nb }}</span>
+                            @endif
+                        </a>
+                    </li>
+                @endif
+
+                {{-- ============================================
+                     MENU CLIENT: hanya Dashboard
+                     (tidak ada akses ke fitur admin/developer)
+                     ============================================ --}}
+                {{-- Menu client tidak perlu ditambahkan di sini
+                     karena proteksi sudah di middleware route --}}
+
             @endauth
 
 
@@ -176,6 +236,23 @@
                     </div>
 
                     <ul class="navbar-nav ml-auto">
+
+                        {{-- Bell Icon Notifikasi (admin & developer) --}}
+                        @auth
+                            @if(in_array(auth()->user()->role, ['admin', 'developer']))
+                                @php $unreadCount = auth()->user()->unreadNotifications->count(); @endphp
+                                <li class="nav-item mr-2">
+                                    <a class="nav-link position-relative" href="{{ route('notifications.index') }}" title="Notifikasi">
+                                        <i class="fas fa-bell fa-lg text-gray-500"></i>
+                                        @if($unreadCount > 0)
+                                            <span class="badge badge-danger badge-counter" style="position:absolute;top:5px;right:0;font-size:10px;">
+                                                {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+                                            </span>
+                                        @endif
+                                    </a>
+                                </li>
+                            @endif
+                        @endauth
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -262,6 +339,9 @@
     <script src="{{ asset('sbadmin2/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('sbadmin2/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
     <script src="{{ asset('sbadmin2/js/sb-admin-2.min.js') }}"></script>
+
+    {{-- Stack untuk scripts tambahan dari halaman child (misal: Kanban SortableJS) --}}
+    @stack('scripts')
 
 </body>
 
