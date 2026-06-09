@@ -21,7 +21,7 @@
                     <th>Email</th>
                     <th>Peran</th>
                     <th>Skill</th>
-                    <th style="width:220px;">Aksi</th>
+                    <th style="width:260px;">Aksi</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -33,14 +33,22 @@
                         <td><span class="badge badge-info">{{ $d->role }}</span></td>
                         <td>{{ $d->skill ?? '-' }}</td>
                         <td>
-                            <a href="{{ route('developers.show',$d) }}" class="btn btn-sm btn-outline-dark">Detail</a>
-                            <a href="{{ route('developers.edit',$d) }}" class="btn btn-sm btn-outline-primary">Ubah</a>
-                            <form action="{{ route('developers.destroy',$d) }}" method="POST" class="d-inline"
-                                  onsubmit="return confirm('Yakin hapus developer ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-outline-danger">Hapus</button>
-                            </form>
+                            <div class="d-flex align-items-center" style="gap:4px;">
+                                <a href="{{ route('developers.show',$d) }}" class="btn btn-info btn-sm">
+                                    <i class="fas fa-eye"></i> Detail
+                                </a>
+                                <a href="{{ route('developers.edit',$d) }}" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> Ubah
+                                </a>
+                                <form action="{{ route('developers.destroy',$d) }}" method="POST" class="m-0"
+                                      onsubmit="return confirm('Yakin hapus developer ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Hapus
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty

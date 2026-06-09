@@ -22,7 +22,7 @@
                         <th>Email</th>
                         <th>Telepon</th>
                         <th>Jumlah Project</th>
-                        <th style="width: 220px;">Aksi</th>
+                        <th style="width: 260px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,20 +39,22 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('clients.show', $client) }}" class="btn btn-sm btn-outline-dark">
-                                    <i class="fas fa-eye"></i> Detail
-                                </a>
-                                <a href="{{ route('clients.edit', $client) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                                <form action="{{ route('clients.destroy', $client) }}" method="POST" class="d-inline"
-                                      onsubmit="return confirm('Yakin hapus client {{ $client->name }}? Akun login client juga akan dihapus.')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-outline-danger">
-                                        <i class="fas fa-trash"></i> Hapus
-                                    </button>
-                                </form>
+                                <div class="d-flex align-items-center" style="gap:4px;">
+                                    <a href="{{ route('clients.show', $client) }}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </a>
+                                    <a href="{{ route('clients.edit', $client) }}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i> Ubah
+                                    </a>
+                                    <form action="{{ route('clients.destroy', $client) }}" method="POST" class="m-0"
+                                          onsubmit="return confirm('Yakin hapus client {{ $client->name }}? Akun login client juga akan dihapus.')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @empty
