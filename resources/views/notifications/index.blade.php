@@ -4,20 +4,60 @@
 
 @section('content')
 
+@php
+    $readNotifCount = auth()->user()->notifications()->whereNotNull('read_at')->count();
+@endphp
+
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">
         <i class="fas fa-bell mr-2"></i> Notifikasi
     </h1>
-    @if(auth()->user()->unreadNotifications->count() > 0)
-        <form action="{{ route('notifications.readAll') }}" method="POST">
-            @csrf
-            @method('PATCH')
-            <button type="submit" class="btn btn-sm btn-outline-primary">
-                <i class="fas fa-check-double mr-1"></i> Tandai Semua Sudah Dibaca
-            </button>
-        </form>
-    @endif
+    <div class="d-flex gap-2">
+        {{-- Tombol Tandai Semua Dibaca --}}
+        @if(auth()->user()->unreadNotifications->count() > 0)
+            <form action="{{ route('notifications.readAll') }}" method="POST" class="mr-2">
+                @csrf
+                @method('PATCH')
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-check-double mr-1"></i> Tandai Semua Sudah Dibaca
+                </button>
+            </form>
+        @endif
+
+        {{-- Tombol Hapus Semua yang Sudah Dibaca --}}
+        @if($readNotifCount > 0)
+            <form action="{{ route('notifications.destroyAllRead') }}" method="POST"
+                  onsubmit="return confirm('Yakin ingin menghapus {{ $readNotifCount }} notifikasi yang sudah dibaca? Notifikasi yang belum dibaca tidak akan ikut terhapus.')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-trash-alt mr-1"></i> Hapus Semua Dibaca
+                    <span class="badge badge-danger ml-1">{{ $readNotifCount }}</span>
+                </button>
+            </form>
+        @endif
+    </div>
 </div>
+
+{{-- Flash Messages --}}
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle mr-1"></i> {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+@endif
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle mr-1"></i> {{ session('error') }}
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+@endif
+@if(session('info'))
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <i class="fas fa-info-circle mr-1"></i> {{ session('info') }}
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+@endif
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -26,6 +66,11 @@
             @if(auth()->user()->unreadNotifications->count() > 0)
                 <span class="badge badge-danger ml-2">
                     {{ auth()->user()->unreadNotifications->count() }} Belum Dibaca
+                </span>
+            @endif
+            @if($readNotifCount > 0)
+                <span class="badge badge-secondary ml-1">
+                    {{ $readNotifCount }} Sudah Dibaca
                 </span>
             @endif
         </h6>
@@ -67,7 +112,7 @@
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <span class="badge {{ $badgeClass }} mr-2">{{ $badgeLabel }}</span>
-                            <span class="{{ $isUnread ? 'font-weight-bold' : '' }}">
+                            <span class="{{ $isUnread ? 'font-weight-bold' : 'text-muted' }}">
                                 {{ $data['message'] ?? '-' }}
                             </span>
                         </div>
@@ -76,7 +121,8 @@
                                 {{ $notif->created_at->diffForHumans() }}
                             </small>
                             @if($isUnread)
-                                <form action="{{ route('notifications.read', $notif->id) }}" method="POST" class="mt-1">
+                                {{-- Tombol Tandai Dibaca --}}
+                                <form action="{{ route('notifications.read', $notif->id) }}" method="POST" class="mt-1 d-inline">
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" class="btn btn-xs btn-outline-secondary py-0 px-1" style="font-size: 11px;">
@@ -84,7 +130,22 @@
                                     </button>
                                 </form>
                             @else
-                                <small class="text-success d-block mt-1"><i class="fas fa-check"></i> Dibaca</small>
+                                {{-- Status Sudah Dibaca + Tombol Hapus --}}
+                                <div class="d-flex align-items-center justify-content-end mt-1">
+                                    <small class="text-success mr-2"><i class="fas fa-check"></i> Dibaca</small>
+                                    <form action="{{ route('notifications.destroy', $notif->id) }}" method="POST"
+                                          class="d-inline"
+                                          onsubmit="return confirm('Hapus notifikasi ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="btn btn-xs btn-outline-danger py-0 px-1"
+                                                style="font-size: 11px;"
+                                                title="Hapus notifikasi ini">
+                                            <i class="fas fa-trash fa-xs"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             @endif
                         </div>
                     </div>

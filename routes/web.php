@@ -92,6 +92,11 @@ Route::middleware(['auth', 'role:admin,developer'])->group(function () {
         Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
         Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
         Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.readAll');
+
+        // Hapus notifikasi yang sudah dibaca
+        // Route statis /notifications/read-all HARUS sebelum /{id} agar tidak konflik
+        Route::delete('/notifications/read-all', [NotificationController::class, 'destroyAllRead'])->name('notifications.destroyAllRead');
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     });
 });
 

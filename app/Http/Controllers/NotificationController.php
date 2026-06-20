@@ -48,4 +48,42 @@ class NotificationController extends Controller
 
         return back()->with('success', 'Semua notifikasi sudah dibaca.');
     }
+
+    /**
+     * Hapus satu notifikasi yang sudah dibaca milik user sendiri.
+     * Notifikasi yang belum dibaca tidak bisa dihapus.
+     */
+    public function destroy(string $id)
+    {
+        $notification = auth()->user()
+            ->notifications()
+            ->findOrFail($id);
+
+        // Pastikan notifikasi sudah dibaca sebelum boleh dihapus
+        if (is_null($notification->read_at)) {
+            return back()->with('error', 'Notifikasi yang belum dibaca tidak dapat dihapus. Tandai sebagai dibaca terlebih dahulu.');
+        }
+
+        $notification->delete();
+
+        return back()->with('success', 'Notifikasi berhasil dihapus.');
+    }
+
+    /**
+     * Hapus semua notifikasi yang sudah dibaca milik user sendiri.
+     * Notifikasi yang belum dibaca (read_at IS NULL) tidak ikut terhapus.
+     */
+    public function destroyAllRead()
+    {
+        $deleted = auth()->user()
+            ->notifications()
+            ->whereNotNull('read_at')
+            ->delete();
+
+        if ($deleted === 0) {
+            return back()->with('info', 'Tidak ada notifikasi yang sudah dibaca untuk dihapus.');
+        }
+
+        return back()->with('success', "{$deleted} notifikasi yang sudah dibaca berhasil dihapus.");
+    }
 }
