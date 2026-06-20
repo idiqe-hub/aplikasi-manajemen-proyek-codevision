@@ -78,7 +78,7 @@ class DeveloperController extends Controller
 
             'role'  => ['required', 'in:frontend,backend,fullstack,pm'],
             'skill' => ['nullable', 'string', 'max:255'],
-            'password' => ['nullable', 'confirmed', Password::defaults()],
+            'password' => ['sometimes', 'nullable', 'confirmed', 'min:8'],
         ]);
 
         // update tabel developers
