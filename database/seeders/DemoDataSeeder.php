@@ -118,6 +118,17 @@ class DemoDataSeeder extends Seeder
             ]
         );
 
+        // Client User — Say It Last
+        $userSayItLast = User::firstOrCreate(
+            ['email' => 'client.sayitlast@demo.test'],
+            [
+                'name'              => 'say it last.com',
+                'password'          => Hash::make('password'),
+                'role'              => 'client',
+                'email_verified_at' => now(),
+            ]
+        );
+
         $this->command->info('✔ Users selesai dibuat/ditemukan.');
 
         // ================================================================
@@ -222,6 +233,19 @@ class DemoDataSeeder extends Seeder
             $clientBerkah->update(['user_id' => $userBerkah->id]);
         }
 
+        $clientSayItLast = Client::firstOrCreate(
+            ['email' => 'client.sayitlast@demo.test'],
+            [
+                'user_id' => $userSayItLast->id,
+                'name'    => 'say it last.com',
+                'phone'   => '0813-1234-5678',
+                'company' => 'say it last.com',
+            ]
+        );
+        if ($clientSayItLast->user_id !== $userSayItLast->id) {
+            $clientSayItLast->update(['user_id' => $userSayItLast->id]);
+        }
+
         $this->command->info('✔ Client records selesai dibuat/ditemukan.');
 
         // ================================================================
@@ -263,6 +287,18 @@ class DemoDataSeeder extends Seeder
                 'start_date'  => $today->copy()->subMonths(3)->format('Y-m-d'),
                 'end_date'    => $today->copy()->addMonths(1)->format('Y-m-d'),
                 'description' => 'Aplikasi untuk mencatat pesanan pelanggan, status pembayaran, dan laporan transaksi.',
+            ]
+        );
+
+        $proj4 = Project::updateOrCreate(
+            ['name' => 'Say It Last'],
+            [
+                'client_id'   => $clientSayItLast->id,
+                'client_name' => 'say it last.com',
+                'status'      => 'on_progress',
+                'start_date'  => $today->copy()->subWeeks(3)->format('Y-m-d'),
+                'end_date'    => $today->copy()->addMonths(4)->format('Y-m-d'),
+                'description' => 'Say It Last adalah aplikasi berbasis web yang digunakan untuk membuat, menyimpan, dan mengelola pesan terakhir atau pesan pribadi yang dapat dikirimkan kepada penerima tertentu sesuai kondisi atau waktu yang ditentukan. Sistem ini mencakup pengelolaan akun pengguna, pesan, penerima, jadwal pengiriman, dan status pesan.',
             ]
         );
 
@@ -475,6 +511,137 @@ class DemoDataSeeder extends Seeder
             ]
         );
 
+        // --- Proyek 4: Say It Last ---
+
+        $task4_1 = Task::updateOrCreate(
+            [
+                'project_id' => $proj4->id,
+                'title'      => 'Analisis kebutuhan fitur Say It Last',
+            ],
+            [
+                'developer_id'    => $devRizhan->id,
+                'status'          => 'done',
+                'progress'        => 100,
+                'deadline'        => $today->copy()->subDays(15)->format('Y-m-d'), // done tepat waktu
+                'estimated_hours' => 6,
+                'actual_hours'    => 5,
+                'description'     => 'Melakukan analisis kebutuhan fungsional dan non-fungsional untuk semua fitur Say It Last: pesan, penerima, jadwal, dan status.',
+            ]
+        );
+
+        $task4_2 = Task::updateOrCreate(
+            [
+                'project_id' => $proj4->id,
+                'title'      => 'Membuat desain database pengguna, pesan, dan penerima',
+            ],
+            [
+                'developer_id'    => $devRanda->id,
+                'status'          => 'done',
+                'progress'        => 100,
+                'deadline'        => $today->copy()->subDays(10)->format('Y-m-d'), // done tepat waktu
+                'estimated_hours' => 8,
+                'actual_hours'    => 8,
+                'description'     => 'Merancang ERD dan skema database untuk entitas users, messages, recipients, schedules, dan message_status.',
+            ]
+        );
+
+        $task4_3 = Task::updateOrCreate(
+            [
+                'project_id' => $proj4->id,
+                'title'      => 'Implementasi autentikasi dan manajemen akun pengguna',
+            ],
+            [
+                'developer_id'    => $devLutfhi->id,
+                'status'          => 'in_progress',
+                'progress'        => 70,
+                'deadline'        => $today->copy()->addDays(4)->format('Y-m-d'), // H-4
+                'estimated_hours' => 10,
+                'actual_hours'    => 6,
+                'description'     => 'Membuat fitur registrasi, login, logout, verifikasi email, dan manajemen profil pengguna.',
+            ]
+        );
+
+        $task4_4 = Task::updateOrCreate(
+            [
+                'project_id' => $proj4->id,
+                'title'      => 'Membuat fitur tambah dan edit pesan terakhir',
+            ],
+            [
+                'developer_id'    => $devBagus->id,
+                'status'          => 'in_progress',
+                'progress'        => 55,
+                'deadline'        => $today->copy()->addDays(6)->format('Y-m-d'), // H-6
+                'estimated_hours' => 9,
+                'actual_hours'    => 5,
+                'description'     => 'Membuat form pembuatan pesan terakhir dengan rich text editor, lampiran file, dan pengaturan penerima.',
+            ]
+        );
+
+        $task4_5 = Task::updateOrCreate(
+            [
+                'project_id' => $proj4->id,
+                'title'      => 'Membuat fitur jadwal pengiriman pesan',
+            ],
+            [
+                'developer_id'    => $devRanda->id,
+                'status'          => 'todo',
+                'progress'        => 0,
+                'deadline'        => $today->copy()->addDays(14)->format('Y-m-d'),
+                'estimated_hours' => 12,
+                'actual_hours'    => 0,
+                'description'     => 'Membuat sistem penjadwalan pengiriman pesan berbasis waktu atau kondisi tertentu yang ditentukan pengguna.',
+            ]
+        );
+
+        $task4_6 = Task::updateOrCreate(
+            [
+                'project_id' => $proj4->id,
+                'title'      => 'Membuat dashboard status pesan',
+            ],
+            [
+                'developer_id'    => $devRizhan->id,
+                'status'          => 'todo',
+                'progress'        => 10,
+                'deadline'        => $today->copy()->addDays(18)->format('Y-m-d'),
+                'estimated_hours' => 8,
+                'actual_hours'    => 0,
+                'description'     => 'Membuat dashboard yang menampilkan status setiap pesan: draft, terjadwal, terkirim, dan gagal kirim.',
+            ]
+        );
+
+        $task4_7 = Task::updateOrCreate(
+            [
+                'project_id' => $proj4->id,
+                'title'      => 'Pengujian fitur pengiriman pesan',
+            ],
+            [
+                'developer_id'    => $devLutfhi->id,
+                'status'          => 'todo',
+                'progress'        => 0,
+                'deadline'        => $today->copy()->addDays(22)->format('Y-m-d'),
+                'estimated_hours' => 7,
+                'actual_hours'    => 0,
+                'description'     => 'Pengujian end-to-end fitur pengiriman pesan: unit test, integration test, dan user acceptance test.',
+            ]
+        );
+
+        // Task ke-8: OVERDUE — deadline kemarin, status in_progress
+        $task4_8 = Task::updateOrCreate(
+            [
+                'project_id' => $proj4->id,
+                'title'      => 'Perbaikan bug validasi penerima pesan',
+            ],
+            [
+                'developer_id'    => $devBagus->id,
+                'status'          => 'in_progress',
+                'progress'        => 60,
+                'deadline'        => $today->copy()->subDay()->format('Y-m-d'), // OVERDUE (kemarin)
+                'estimated_hours' => 5,
+                'actual_hours'    => 3,
+                'description'     => 'Memperbaiki bug pada validasi input penerima pesan: format email tidak terdeteksi dan duplikasi penerima tidak dicegah.',
+            ]
+        );
+
         $this->command->info('✔ Task-task selesai dibuat/diperbarui.');
 
         // ================================================================
@@ -572,6 +739,82 @@ class DemoDataSeeder extends Seeder
             ]
         );
 
+        // ── Say It Last Activity Logs ──
+
+        // Log: todo → done pada task Analisis kebutuhan Say It Last
+        TaskActivityLog::firstOrCreate(
+            [
+                'task_id'    => $task4_1->id,
+                'user_id'    => $adminUser->id,
+                'old_status' => 'todo',
+                'new_status' => 'in_progress',
+            ],
+            [
+                'old_progress' => 0,
+                'new_progress' => 50,
+                'note'         => 'Rizhan mulai analisis kebutuhan Say It Last. Koordinasi awal dengan client say it last.com sudah dilakukan.',
+            ]
+        );
+
+        TaskActivityLog::firstOrCreate(
+            [
+                'task_id'    => $task4_1->id,
+                'user_id'    => $userRizhan->id,
+                'old_status' => 'in_progress',
+                'new_status' => 'done',
+            ],
+            [
+                'old_progress' => 80,
+                'new_progress' => 100,
+                'note'         => 'Analisis kebutuhan selesai. Dokumen SRS sudah disetujui oleh client.',
+            ]
+        );
+
+        // Log: todo → done pada task Desain Database Say It Last
+        TaskActivityLog::firstOrCreate(
+            [
+                'task_id'    => $task4_2->id,
+                'user_id'    => $userRanda->id,
+                'old_status' => 'in_progress',
+                'new_status' => 'done',
+            ],
+            [
+                'old_progress' => 85,
+                'new_progress' => 100,
+                'note'         => 'ERD dan skema database selesai dirancang. Sudah review bersama Rizhan dan disetujui.',
+            ]
+        );
+
+        // Log: progress update pada task Implementasi Autentikasi
+        TaskActivityLog::firstOrCreate(
+            [
+                'task_id'      => $task4_3->id,
+                'user_id'      => $userLutfhi->id,
+                'old_progress' => 30,
+                'new_progress' => 70,
+            ],
+            [
+                'old_status' => 'in_progress',
+                'new_status' => 'in_progress',
+                'note'       => 'Fitur registrasi dan login selesai. Sedang mengerjakan verifikasi email dan manajemen profil.',
+            ]
+        );
+
+        // Log: bug report pada task Perbaikan Bug Validasi (overdue)
+        TaskActivityLog::firstOrCreate(
+            [
+                'task_id'    => $task4_8->id,
+                'user_id'    => $adminUser->id,
+                'old_status' => 'todo',
+                'new_status' => 'in_progress',
+            ],
+            [
+                'old_progress' => 0,
+                'new_progress' => 60,
+                'note'         => 'Bug kritikal ditemukan: validasi format email penerima tidak berjalan. Bagus segera tangani, deadline sudah lewat.',
+            ]
+        );
+
         $this->command->info('✔ Task Activity Logs selesai dibuat.');
 
         // ================================================================
@@ -651,6 +894,89 @@ class DemoDataSeeder extends Seeder
             ]
         );
 
+        // ── Say It Last Task Comments ──
+
+        // Admin memberi arahan awal pada task analisis Say It Last
+        TaskComment::firstOrCreate(
+            [
+                'task_id' => $task4_1->id,
+                'user_id' => $adminUser->id,
+                'comment' => 'Rizhan, pastikan analisis kebutuhan mencakup semua skenario pengiriman pesan: terjadwal, berdasarkan kondisi, dan manual. Konsultasikan juga dengan client untuk edge case.',
+            ]
+        );
+
+        // Developer lapor selesai analisis
+        TaskComment::firstOrCreate(
+            [
+                'task_id' => $task4_1->id,
+                'user_id' => $userRizhan->id,
+                'comment' => 'Analisis selesai. Ada 3 skenario utama: (1) pesan terjadwal berdasarkan tanggal, (2) pesan dipicu kondisi manual oleh admin, (3) pesan berulang periodik. Semua sudah terdokumentasi di SRS.',
+            ]
+        );
+
+        // Developer update ERD di task desain database
+        TaskComment::firstOrCreate(
+            [
+                'task_id' => $task4_2->id,
+                'user_id' => $userRanda->id,
+                'comment' => 'ERD selesai. Ada 5 tabel utama: users, messages, recipients, schedules, message_logs. Relasi many-to-many antara messages dan recipients sudah dihandle dengan pivot table.',
+            ]
+        );
+
+        // Admin feedback desain database
+        TaskComment::firstOrCreate(
+            [
+                'task_id' => $task4_2->id,
+                'user_id' => $adminUser->id,
+                'comment' => 'Desain database sudah bagus Randa. Tambahkan kolom `sent_at` dan `failed_reason` di tabel message_logs untuk keperluan tracking pengiriman.',
+            ]
+        );
+
+        // Developer update progres autentikasi
+        TaskComment::firstOrCreate(
+            [
+                'task_id' => $task4_3->id,
+                'user_id' => $userLutfhi->id,
+                'comment' => 'Progress 70%: Login dan registrasi sudah selesai. Verifikasi email pakai Laravel built-in MustVerifyEmail. Sedang handle edge case akun tidak aktif.',
+            ]
+        );
+
+        // Admin tanya progres task fitur pesan
+        TaskComment::firstOrCreate(
+            [
+                'task_id' => $task4_4->id,
+                'user_id' => $adminUser->id,
+                'comment' => 'Bagus, bagaimana progres fitur tambah pesan? Pastikan rich text editor bisa handle format teks, gambar inline, dan emoji.',
+            ]
+        );
+
+        // Developer jawab progres fitur pesan
+        TaskComment::firstOrCreate(
+            [
+                'task_id' => $task4_4->id,
+                'user_id' => $userBagus->id,
+                'comment' => 'Progres 55%: Form pesan sudah jalan dengan Quill editor. Fitur lampiran file masih dalam pengerjaan. Target selesai 2 hari lagi.',
+            ]
+        );
+
+        // Admin eskalasi bug overdue
+        TaskComment::firstOrCreate(
+            [
+                'task_id' => $task4_8->id,
+                'user_id' => $adminUser->id,
+                'comment' => 'Bagus, bug ini sudah overdue! Prioritaskan segera. Bug duplikasi penerima bisa menyebabkan pesan terkirim dobel ke orang yang sama.',
+            ]
+        );
+
+        // Developer respon bug
+        TaskComment::firstOrCreate(
+            [
+                'task_id' => $task4_8->id,
+                'user_id' => $userBagus->id,
+                'comment' => 'Sudah ditemukan root cause-nya: validasi unique pada email penerima tidak dijalankan saat update. Fix sedang dikerjakan, estimasi selesai hari ini.',
+            ]
+        );
+
         $this->command->info('✔ Task Comments selesai dibuat.');
 
         // ================================================================
@@ -664,21 +990,28 @@ class DemoDataSeeder extends Seeder
         $this->command->table(
             ['Role', 'Email', 'Password'],
             [
-                ['Admin',     'admin@codevision.test',    'password'],
-                ['Developer', 'rizhan@codevision.test',   'password'],
-                ['Developer', 'randa@codevision.test',    'password'],
-                ['Developer', 'lutfhi@codevision.test',   'password'],
-                ['Developer', 'bagus@codevision.test',    'password'],
-                ['Client',    'client.karya@demo.test',   'password'],
-                ['Client',    'client.umkm@demo.test',    'password'],
-                ['Client',    'client.berkah@demo.test',  'password'],
+                ['Admin',     'admin@codevision.test',         'password'],
+                ['Developer', 'rizhan@codevision.test',        'password'],
+                ['Developer', 'randa@codevision.test',         'password'],
+                ['Developer', 'lutfhi@codevision.test',        'password'],
+                ['Developer', 'bagus@codevision.test',         'password'],
+                ['Client',    'client.karya@demo.test',        'password'],
+                ['Client',    'client.umkm@demo.test',         'password'],
+                ['Client',    'client.berkah@demo.test',       'password'],
+                ['Client',    'client.sayitlast@demo.test',    'password'],
             ]
         );
+        $this->command->newLine();
+        $this->command->info('Proyek demo yang tersedia:');
+        $this->command->info('  1. Sistem Informasi Inventaris Barang  (CV Karya Mandiri)');
+        $this->command->info('  2. Website Company Profile UMKM        (Rumah UMKM Banjarmasin)');
+        $this->command->info('  3. Aplikasi Manajemen Pemesanan Online  (Toko Berkah Digital)');
+        $this->command->info('  4. Say It Last                          (say it last.com)  ← BARU');
         $this->command->newLine();
         $this->command->info('Distribusi deadline tasks:');
         $this->command->info('  H-3  (' . $today->copy()->addDays(3)->format('d M Y') . '): CRUD data barang, Integrasi form kontak, Laporan transaksi');
         $this->command->info('  H-1  (' . $today->copy()->addDay()->format('d M Y') . '):   Halaman profil & layanan, Modul data produk');
-        $this->command->info('  Overdue: Laporan stok (' . $today->copy()->subDays(2)->format('d M Y') . '), Galeri produk (' . $today->copy()->subDays(3)->format('d M Y') . '), Modul pesanan (' . $today->copy()->subDays(1)->format('d M Y') . ')');
-        $this->command->info('  Done:    Analisis kebutuhan, Desain database, Halaman beranda, Modul login');
+        $this->command->info('  Overdue: Laporan stok, Galeri produk, Modul pesanan, Perbaikan bug validasi Say It Last (' . $today->copy()->subDay()->format('d M Y') . ')');
+        $this->command->info('  Done:    Analisis kebutuhan, Desain database, Halaman beranda, Modul login, Analisis Say It Last, Desain DB Say It Last');
     }
 }

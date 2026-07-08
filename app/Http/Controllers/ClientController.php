@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class ClientController extends Controller
@@ -90,16 +91,21 @@ class ClientController extends Controller
             'name'    => ['required', 'string', 'max:255'],
             'email'   => [
                 'required', 'email', 'max:255',
-                'unique:clients,email,' . $client->id,
-                'unique:users,email,' . ($client->user_id ?? 'NULL'),
+                // Abaikan record client yang sedang diedit (berdasarkan primary key)
+                Rule::unique('clients', 'email')->ignore($client->id),
+                // Abaikan user yang terhubung ke client ini (berdasarkan user_id)
+                Rule::unique('users', 'email')->ignore($client->user_id),
             ],
             'phone'    => ['nullable', 'string', 'max:20'],
             'company'  => ['nullable', 'string', 'max:255'],
-            'password' => ['nullable', 'confirmed', Password::defaults()],
+            // 'sometimes' → validasi hanya berjalan jika field dikirim DAN tidak kosong
+            // 'nullable'  → izinkan nilai null/kosong (skip seluruh rule jika null)
+            // 'confirmed' → cocokkan dengan password_confirmation (hanya jika diisi)
+            'password' => ['sometimes', 'nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
-        DB::transaction(function () use ($validated, $client) {
-            // Update tabel clients
+        DB::transaction(function () use ($validated, $client, $request) {
+            // Update tabel clients — TIDAK membuat record baru
             $client->update([
                 'name'    => $validated['name'],
                 'email'   => $validated['email'],
@@ -107,15 +113,16 @@ class ClientController extends Controller
                 'company' => $validated['company'] ?? null,
             ]);
 
-            // Update akun login user
+            // Update akun login user — TIDAK membuat user baru
             if ($client->user) {
                 $userData = [
                     'name'  => $validated['name'],
                     'email' => $validated['email'],
                     'role'  => 'client',
                 ];
-                if (!empty($validated['password'])) {
-                    $userData['password'] = Hash::make($validated['password']);
+                // Password hanya diupdate jika benar-benar diisi (tidak kosong)
+                if ($request->filled('password')) {
+                    $userData['password'] = Hash::make($request->password);
                 }
                 $client->user->update($userData);
             }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule;
 use App\Models\Developer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -72,16 +73,17 @@ class DeveloperController extends Controller
                 'required',
                 'email',
                 'max:255',
-                'unique:developers,email,' . $developer->id,
-                'unique:users,email,' . ($developer->user_id ?? 'NULL'),
+                // Abaikan record developer yang sedang diedit (berdasarkan primary key)
+                Rule::unique('developers', 'email')->ignore($developer->id),
+                // Abaikan user yang terhubung ke developer ini (berdasarkan user_id)
+                Rule::unique('users', 'email')->ignore($developer->user_id),
             ],
-
             'role'  => ['required', 'in:frontend,backend,fullstack,pm'],
             'skill' => ['nullable', 'string', 'max:255'],
             'password' => ['sometimes', 'nullable', 'confirmed', 'min:8'],
         ]);
 
-        // update tabel developers
+        // Update tabel developers — TIDAK membuat record baru
         $developer->update([
             'name'  => $validated['name'],
             'email' => $validated['email'],
@@ -89,7 +91,7 @@ class DeveloperController extends Controller
             'skill' => $validated['skill'] ?? '-',
         ]);
 
-        // update tabel users (akun login)
+        // Update tabel users (akun login) — TIDAK membuat user baru
         if ($developer->user) {
             $userData = [
                 'name'  => $validated['name'],
@@ -97,8 +99,9 @@ class DeveloperController extends Controller
                 'role'  => 'developer',
             ];
 
-            if (!empty($validated['password'])) {
-                $userData['password'] = Hash::make($validated['password']);
+            // Password hanya diupdate jika benar-benar diisi (tidak kosong)
+            if ($request->filled('password')) {
+                $userData['password'] = Hash::make($request->password);
             }
 
             $developer->user->update($userData);
