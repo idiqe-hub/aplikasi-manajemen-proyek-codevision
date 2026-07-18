@@ -43,6 +43,17 @@ class DashboardController extends Controller
             ->limit(8)
             ->get();
 
+        // Data grafik produktivitas mingguan (7 hari terakhir)
+        $weeklyLabels = [];
+        $weeklyData   = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $day = now()->subDays($i);
+            $weeklyLabels[] = $day->translatedFormat('D, d M');
+            $weeklyData[]   = Task::where('status', 'done')
+                ->whereDate('updated_at', $day->toDateString())
+                ->count();
+        }
+
         return view('dashboard.index', compact(
             'totalProjects',
             'totalTasks',
@@ -51,7 +62,9 @@ class DashboardController extends Controller
             'doneTasks',
             'doneRate',
             'overdueTasks',
-            'latestTasks'
+            'latestTasks',
+            'weeklyLabels',
+            'weeklyData'
         ));
     }
 }

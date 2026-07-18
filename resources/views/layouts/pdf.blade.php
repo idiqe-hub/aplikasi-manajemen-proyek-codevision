@@ -189,7 +189,7 @@
             Mengetahui,<br>
             Pimpinan Perusahaan<br><br><br><br>
 
-            <b>(_____________________)</b><br>
+            <b>(Gusti Randa)</b><br>
         </div>
 
         <div style="clear: both;"></div>

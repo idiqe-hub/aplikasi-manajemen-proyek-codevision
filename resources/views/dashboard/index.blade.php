@@ -107,6 +107,23 @@
 
   </div>
 
+  {{-- Grafik Produktivitas Mingguan --}}
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-chart-bar mr-1"></i> Produktivitas Mingguan (7 Hari Terakhir)
+          </h6>
+          <span class="text-muted small">Task selesai per hari</span>
+        </div>
+        <div class="card-body">
+          <canvas id="weeklyProductivityChart" height="80"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {{-- Tables --}}
   <div class="row">
 
@@ -186,3 +203,50 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+  (function () {
+    var labels = @json($weeklyLabels);
+    var data   = @json($weeklyData);
+    var ctx    = document.getElementById('weeklyProductivityChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Task Selesai',
+          data: data,
+          backgroundColor: 'rgba(78, 115, 223, 0.55)',
+          borderColor: 'rgba(78, 115, 223, 1)',
+          borderWidth: 2,
+          borderRadius: 5,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) { return ' ' + ctx.parsed.y + ' task selesai'; }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1, precision: 0 },
+            grid: { color: 'rgba(0,0,0,0.05)' }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+  })();
+</script>
+@endpush
