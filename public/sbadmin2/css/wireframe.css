@@ -1,0 +1,503 @@
+/* =============================================================
+   WIREFRAME MODE — Balsamiq-style Global CSS Override
+   Digunakan oleh toggle di admin layout.
+   Class .wireframe-mode ditambahkan ke <body> saat aktif.
+   ============================================================= */
+
+/* ── Google Font: Caveat (handwriting/sketchy) ─────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
+
+/* ════════════════════════════════════════════════════════════
+   RESET WARNA & FONT DASAR
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode,
+body.wireframe-mode * {
+    font-family: 'Caveat', cursive !important;
+    letter-spacing: 0.3px !important;
+}
+
+body.wireframe-mode {
+    background-color: #f7f6f0 !important;
+    color: #1a1a1a !important;
+}
+
+/* ── Hapus semua shadow ────────────────────────────────────── */
+body.wireframe-mode *,
+body.wireframe-mode .shadow,
+body.wireframe-mode .shadow-sm,
+body.wireframe-mode .shadow-lg {
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   SIDEBAR
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .sidebar,
+body.wireframe-mode .sidebar-solid,
+body.wireframe-mode #accordionSidebar {
+    background: #e8e7e0 !important;
+    background-image: none !important;
+    border-right: 2.5px solid #1a1a1a !important;
+}
+
+body.wireframe-mode .sidebar .nav-item .nav-link,
+body.wireframe-mode .sidebar .nav-item .nav-link i,
+body.wireframe-mode .sidebar .nav-item .nav-link span {
+    color: #1a1a1a !important;
+}
+
+body.wireframe-mode .sidebar .nav-item .nav-link:hover {
+    background: rgba(0, 0, 0, 0.1) !important;
+    color: #000 !important;
+}
+
+body.wireframe-mode .sidebar .nav-item.active .nav-link {
+    background: rgba(0, 0, 0, 0.15) !important;
+    color: #000 !important;
+    border-left: 3px solid #1a1a1a !important;
+}
+
+body.wireframe-mode .sidebar hr,
+body.wireframe-mode .sidebar .sidebar-divider {
+    border-color: #aaa !important;
+}
+
+body.wireframe-mode .brand-title,
+body.wireframe-mode .brand-subtitle {
+    color: #1a1a1a !important;
+}
+
+body.wireframe-mode .brand-logo {
+    background: #ddd !important;
+    border: 2px solid #1a1a1a !important;
+    border-radius: 0 !important;
+    filter: grayscale(100%) !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   TOPBAR / NAVBAR
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .topbar,
+body.wireframe-mode .navbar {
+    background: #eeede8 !important;
+    border-bottom: 2.5px solid #1a1a1a !important;
+}
+
+body.wireframe-mode .topbar .nav-link,
+body.wireframe-mode .topbar .text-gray-600,
+body.wireframe-mode .topbar .text-gray-700,
+body.wireframe-mode .topbar .text-gray-500 {
+    color: #1a1a1a !important;
+}
+
+body.wireframe-mode .topbar-divider {
+    border-right-color: #aaa !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   CARDS
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .card {
+    background: #faf9f4 !important;
+    border: 2.5px solid #1a1a1a !important;
+    border-radius: 0 !important;
+}
+
+body.wireframe-mode .card-header {
+    background: #e8e7e0 !important;
+    border-bottom: 2px solid #1a1a1a !important;
+    border-radius: 0 !important;
+    color: #1a1a1a !important;
+}
+
+body.wireframe-mode .card-footer {
+    background: #e8e7e0 !important;
+    border-top: 2px solid #1a1a1a !important;
+}
+
+body.wireframe-mode .card-body {
+    background: #faf9f4 !important;
+}
+
+/* ── Border Left Cards (stat cards) ─────────────────────────── */
+body.wireframe-mode .border-left-primary,
+body.wireframe-mode .border-left-success,
+body.wireframe-mode .border-left-info,
+body.wireframe-mode .border-left-warning,
+body.wireframe-mode .border-left-danger {
+    border-left: 5px solid #555 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   TOMBOL / BUTTONS
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .btn {
+    background: #e8e7e0 !important;
+    color: #1a1a1a !important;
+    border: 2px solid #1a1a1a !important;
+    border-radius: 0 !important;
+    font-family: 'Caveat', cursive !important;
+    font-size: 1rem !important;
+}
+
+body.wireframe-mode .btn:hover {
+    background: #d5d4cc !important;
+    color: #000 !important;
+    border-color: #000 !important;
+}
+
+body.wireframe-mode .btn-primary,
+body.wireframe-mode .btn-success,
+body.wireframe-mode .btn-info,
+body.wireframe-mode .btn-warning,
+body.wireframe-mode .btn-danger,
+body.wireframe-mode .btn-secondary {
+    background: #e8e7e0 !important;
+    color: #1a1a1a !important;
+    border: 2px solid #1a1a1a !important;
+    border-radius: 0 !important;
+}
+
+body.wireframe-mode .btn-primary:hover,
+body.wireframe-mode .btn-success:hover,
+body.wireframe-mode .btn-danger:hover,
+body.wireframe-mode .btn-info:hover {
+    background: #ccc !important;
+}
+
+body.wireframe-mode .btn-sm {
+    font-size: 0.9rem !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   FORM ELEMENTS
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode input,
+body.wireframe-mode select,
+body.wireframe-mode textarea,
+body.wireframe-mode .form-control,
+body.wireframe-mode .custom-select {
+    background: #faf9f4 !important;
+    border: 2px solid #1a1a1a !important;
+    border-radius: 0 !important;
+    color: #1a1a1a !important;
+    font-family: 'Caveat', cursive !important;
+    font-size: 1rem !important;
+}
+
+body.wireframe-mode input:focus,
+body.wireframe-mode select:focus,
+body.wireframe-mode textarea:focus,
+body.wireframe-mode .form-control:focus {
+    background: #f5f4ef !important;
+    border-color: #000 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+body.wireframe-mode label,
+body.wireframe-mode .form-label {
+    color: #1a1a1a !important;
+    font-weight: 600 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   TABEL
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode table,
+body.wireframe-mode .table {
+    background: #faf9f4 !important;
+    border: 2px solid #1a1a1a !important;
+    border-collapse: collapse !important;
+}
+
+body.wireframe-mode .table th,
+body.wireframe-mode .table td {
+    border: 1.5px solid #555 !important;
+    color: #1a1a1a !important;
+    background: transparent !important;
+}
+
+body.wireframe-mode .table thead th,
+body.wireframe-mode .thead-light th {
+    background: #e0dfda !important;
+    color: #1a1a1a !important;
+    border-bottom: 2px solid #1a1a1a !important;
+    font-weight: 700 !important;
+}
+
+body.wireframe-mode .table-hover tbody tr:hover {
+    background-color: #e8e7e0 !important;
+}
+
+body.wireframe-mode .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f0efe9 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   BADGES
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .badge,
+body.wireframe-mode .badge-primary,
+body.wireframe-mode .badge-success,
+body.wireframe-mode .badge-info,
+body.wireframe-mode .badge-warning,
+body.wireframe-mode .badge-danger,
+body.wireframe-mode .badge-secondary {
+    background: #ccc !important;
+    color: #1a1a1a !important;
+    border: 1.5px solid #555 !important;
+    border-radius: 0 !important;
+    font-family: 'Caveat', cursive !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   ALERTS
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .alert,
+body.wireframe-mode .alert-success,
+body.wireframe-mode .alert-danger,
+body.wireframe-mode .alert-info,
+body.wireframe-mode .alert-warning {
+    background: #eeeee8 !important;
+    color: #1a1a1a !important;
+    border: 2px solid #555 !important;
+    border-radius: 0 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   DROPDOWN MENU
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .dropdown-menu {
+    background: #f5f4ef !important;
+    border: 2px solid #1a1a1a !important;
+    border-radius: 0 !important;
+}
+
+body.wireframe-mode .dropdown-item {
+    color: #1a1a1a !important;
+    font-family: 'Caveat', cursive !important;
+    font-size: 1rem !important;
+}
+
+body.wireframe-mode .dropdown-item:hover {
+    background: #e0dfda !important;
+    color: #000 !important;
+}
+
+body.wireframe-mode .dropdown-divider {
+    border-color: #999 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   MODAL
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .modal-content {
+    background: #faf9f4 !important;
+    border: 2.5px solid #1a1a1a !important;
+    border-radius: 0 !important;
+}
+
+body.wireframe-mode .modal-header {
+    background: #e8e7e0 !important;
+    border-bottom: 2px solid #1a1a1a !important;
+    border-radius: 0 !important;
+}
+
+body.wireframe-mode .modal-footer {
+    background: #e8e7e0 !important;
+    border-top: 2px solid #1a1a1a !important;
+}
+
+body.wireframe-mode .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: none !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   WARNA TEKS
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .text-primary,
+body.wireframe-mode .text-success,
+body.wireframe-mode .text-info,
+body.wireframe-mode .text-warning,
+body.wireframe-mode .text-danger {
+    color: #333 !important;
+}
+
+body.wireframe-mode .text-muted {
+    color: #777 !important;
+}
+
+body.wireframe-mode .text-white {
+    color: #1a1a1a !important;
+}
+
+body.wireframe-mode .text-gray-800,
+body.wireframe-mode .text-gray-700,
+body.wireframe-mode .text-gray-600,
+body.wireframe-mode .text-gray-500,
+body.wireframe-mode .text-gray-400,
+body.wireframe-mode .text-gray-300 {
+    color: #444 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   BACKGROUND WARNA
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .bg-primary,
+body.wireframe-mode .bg-success,
+body.wireframe-mode .bg-info,
+body.wireframe-mode .bg-warning,
+body.wireframe-mode .bg-danger,
+body.wireframe-mode .bg-dark {
+    background: #dddcD7 !important;
+    color: #1a1a1a !important;
+}
+
+body.wireframe-mode .bg-white,
+body.wireframe-mode .bg-light {
+    background: #faf9f4 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   PROGRESS BAR
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .progress {
+    background: #d5d4cc !important;
+    border: 1.5px solid #555 !important;
+    border-radius: 0 !important;
+    height: 10px !important;
+}
+
+body.wireframe-mode .progress-bar {
+    background: #888 !important;
+    border-radius: 0 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   PAGINATION
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .pagination .page-link {
+    background: #faf9f4 !important;
+    border: 1.5px solid #555 !important;
+    color: #1a1a1a !important;
+    border-radius: 0 !important;
+    font-family: 'Caveat', cursive !important;
+}
+
+body.wireframe-mode .pagination .page-item.active .page-link {
+    background: #c5c4be !important;
+    color: #000 !important;
+    border-color: #1a1a1a !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   GAMBAR & IKON
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode img:not(.wireframe-exclude) {
+    filter: grayscale(100%) contrast(0.7) !important;
+    opacity: 0.75 !important;
+    border: 1.5px solid #aaa !important;
+}
+
+body.wireframe-mode .fas,
+body.wireframe-mode .far,
+body.wireframe-mode .fab,
+body.wireframe-mode i[class*="fa-"] {
+    color: #555 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   FOOTER
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .sticky-footer,
+body.wireframe-mode footer {
+    background: #e8e7e0 !important;
+    border-top: 2px solid #1a1a1a !important;
+    color: #555 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   SCROLL TO TOP
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .scroll-to-top {
+    background: #ccc !important;
+    border: 2px solid #1a1a1a !important;
+    border-radius: 0 !important;
+    color: #1a1a1a !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   KANBAN CARDS
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode [class*="kanban"],
+body.wireframe-mode .kanban-col,
+body.wireframe-mode .kanban-card {
+    background: #f0efe9 !important;
+    border: 2px solid #555 !important;
+    border-radius: 0 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   NAV TABS & PILLS
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .nav-tabs .nav-link,
+body.wireframe-mode .nav-pills .nav-link {
+    background: transparent !important;
+    color: #1a1a1a !important;
+    border: 1.5px solid #aaa !important;
+    border-radius: 0 !important;
+    font-family: 'Caveat', cursive !important;
+}
+
+body.wireframe-mode .nav-tabs .nav-link.active,
+body.wireframe-mode .nav-pills .nav-link.active {
+    background: #e0dfda !important;
+    border-color: #1a1a1a !important;
+    color: #000 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   SELECT2 / CUSTOM SELECTS
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode .select2-container--default .select2-selection--single,
+body.wireframe-mode .select2-container--default .select2-selection--multiple {
+    background: #faf9f4 !important;
+    border: 2px solid #1a1a1a !important;
+    border-radius: 0 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   WIREFRAME TOGGLE BUTTON (always visible, unaffected)
+   ════════════════════════════════════════════════════════════ */
+#wireframeToggle {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    font-size: 11px;
+}
+
+#wireframeToggle.active {
+    background: #555 !important;
+    color: #f5f4ef !important;
+    border-color: #333 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   WATERMARK WIREFRAME
+   ════════════════════════════════════════════════════════════ */
+body.wireframe-mode::after {
+    content: "WIREFRAME MODE";
+    position: fixed;
+    bottom: 18px;
+    right: 80px;
+    font-family: 'Caveat', cursive;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+    z-index: 9999;
+    font-weight: 700;
+}

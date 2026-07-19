@@ -4,6 +4,27 @@
 <head>
     <meta charset="utf-8">
     <title>{{ $docTitle ?? 'Laporan' }}</title>
+    @if(request()->query('wireframe'))
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
+        body { font-family: 'Caveat', cursive !important; background: #f7f6f0 !important; color: #1a1a1a !important; }
+        table.report th, table.report td { border: 2.5px solid #1a1a1a !important; font-family: 'Caveat', cursive !important; }
+        .line-1, .line-2 { border-top: 3px solid #1a1a1a !important; border-bottom: none !important; }
+        th { background: #e8e7e0 !important; }
+        img { filter: grayscale(100%) !important; opacity: 0.8 !important; }
+        body::after {
+            content: "WIREFRAME MODE";
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: rgba(0, 0, 0, 0.1);
+            pointer-events: none;
+            font-family: 'Caveat', cursive;
+            letter-spacing: 4px;
+        }
+    </style>
+    @endif
     <style>
         @page {
             size: A4;

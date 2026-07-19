@@ -12,6 +12,9 @@
     <link href="{{ asset('sbadmin2/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('sbadmin2/css/custom.css') }}" rel="stylesheet">
 
+    {{-- Wireframe Mode CSS (dimuat selalu; aktif hanya jika body punya class wireframe-mode) --}}
+    <link href="{{ asset('sbadmin2/css/wireframe.css') }}" rel="stylesheet" id="wireframeCss">
+
     {{-- CSRF Token untuk AJAX --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -231,6 +234,15 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
+                    {{-- Wireframe Mode Toggle --}}
+                    <button id="wireframeToggle"
+                        class="btn btn-sm btn-outline-secondary d-none d-sm-inline-flex align-items-center mr-2"
+                        title="Toggle Wireframe Mode"
+                        style="border:1.5px solid #bbb; border-radius:4px; padding:3px 10px; gap:5px;">
+                        <i class="fas fa-drafting-compass fa-sm mr-1"></i>
+                        <span id="wireframeLabel">Wireframe</span>
+                    </button>
+
                     <div class="d-none d-sm-inline-block font-weight-bold text-gray-700">
                         @yield('page_title', 'Dashboard')
                     </div>
@@ -342,6 +354,46 @@
 
     {{-- Stack untuk scripts tambahan dari halaman child (misal: Kanban SortableJS) --}}
     @stack('scripts')
+
+    {{-- ═══════════════════════════════════════════════
+         WIREFRAME MODE — Toggle Script
+         Menyimpan preferensi ke localStorage.
+         ═══════════════════════════════════════════════ --}}
+    <script>
+    (function () {
+        var STORAGE_KEY = 'codevision_wireframe_mode';
+        var body        = document.body;
+        var btn         = document.getElementById('wireframeToggle');
+        var label       = document.getElementById('wireframeLabel');
+
+        function applyWireframe(active) {
+            if (active) {
+                body.classList.add('wireframe-mode');
+                if (btn)   btn.classList.add('active');
+                if (label) label.textContent = 'Normal Mode';
+                localStorage.setItem(STORAGE_KEY, '1');
+            } else {
+                body.classList.remove('wireframe-mode');
+                if (btn)   btn.classList.remove('active');
+                if (label) label.textContent = 'Wireframe';
+                localStorage.removeItem(STORAGE_KEY);
+            }
+        }
+
+        // Restore dari localStorage saat halaman load
+        if (localStorage.getItem(STORAGE_KEY) === '1') {
+            applyWireframe(true);
+        }
+
+        // Klik toggle
+        if (btn) {
+            btn.addEventListener('click', function () {
+                var isActive = body.classList.contains('wireframe-mode');
+                applyWireframe(!isActive);
+            });
+        }
+    })();
+    </script>
 
 </body>
 

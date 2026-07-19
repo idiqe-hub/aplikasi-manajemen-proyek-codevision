@@ -315,6 +315,7 @@ class ReportController extends Controller
             array_merge($data, compact('projects'))
         )->setPaper('a4', 'portrait');
 
+        if (request()->query('wireframe')) { return view('reports.projects_active_pdf', array_merge($data, compact('projects'))); }
         return $pdf->download(
             'Laporan_Project_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf'
         );
@@ -346,6 +347,7 @@ class ReportController extends Controller
         $pdf = Pdf::loadView('reports.tasks_by_developer_pdf', array_merge($data, compact('tasks')))
             ->setPaper('a4', 'portrait');
 
+        if (request()->query('wireframe')) { return view('reports.tasks_by_developer_pdf', array_merge($data, compact('tasks'))); }
         return $pdf->download('Laporan_Task_Per_Developer_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
     }
 
@@ -365,6 +367,7 @@ class ReportController extends Controller
         $pdf = Pdf::loadView('reports.tasks_overdue_pdf', array_merge($data, compact('tasks')))
             ->setPaper('a4', 'portrait');
 
+        if (request()->query('wireframe')) { return view('reports.tasks_overdue_pdf', array_merge($data, compact('tasks'))); }
         return $pdf->download('Laporan_Overdue_Task_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
     }
 
@@ -395,6 +398,7 @@ class ReportController extends Controller
         $pdf = Pdf::loadView('reports.project_progress_pdf', array_merge($data, compact('rows')))
             ->setPaper('a4', 'portrait');
 
+        if (request()->query('wireframe')) { return view('reports.project_progress_pdf', array_merge($data, compact('rows'))); }
         return $pdf->download('Laporan_Progress_Per_Project_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
     }
 
@@ -419,6 +423,7 @@ class ReportController extends Controller
         $pdf = Pdf::loadView('reports.hours_summary_pdf', array_merge($data, compact('tasks', 'totals', 'projectId')))
             ->setPaper('a4', 'portrait');
 
+        if (request()->query('wireframe')) { return view('reports.hours_summary_pdf', array_merge($data, compact('tasks', 'totals', 'projectId'))); }
         return $pdf->download('Laporan_Estimasi_vs_Realisasi_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
     }
 
@@ -437,6 +442,7 @@ class ReportController extends Controller
         $pdf = Pdf::loadView('reports.workload_pdf', array_merge($data, compact('developers')))
             ->setPaper('a4', 'portrait');
 
+        if (request()->query('wireframe')) { return view('reports.workload_pdf', array_merge($data, compact('developers'))); }
         return $pdf->download('Laporan_Workload_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
     }
 
@@ -464,6 +470,7 @@ class ReportController extends Controller
         $pdf = Pdf::loadView('reports.time_efficiency_pdf', array_merge($data, compact('tasks')))
             ->setPaper('a4', 'portrait');
 
+        if (request()->query('wireframe')) { return view('reports.time_efficiency_pdf', array_merge($data, compact('tasks'))); }
         return $pdf->download('Laporan_Time_Efficiency_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
     }
 
@@ -482,6 +489,7 @@ class ReportController extends Controller
         $pdf = Pdf::loadView('reports.task_distribution_pdf', array_merge($data, compact('projects')))
             ->setPaper('a4', 'portrait');
 
+        if (request()->query('wireframe')) { return view('reports.task_distribution_pdf', array_merge($data, compact('projects'))); }
         return $pdf->download('Laporan_Task_Distribution_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
     }
 
@@ -544,6 +552,7 @@ class ReportController extends Controller
         $pdf = Pdf::loadView('reports.weekly_productivity_pdf', array_merge($data, compact('results')))
             ->setPaper('a4', 'portrait');
 
+        if (request()->query('wireframe')) { return view('reports.weekly_productivity_pdf', array_merge($data, compact('results'))); }
         return $pdf->download('Laporan_Weekly_Productivity_' . now()->timezone($tz)->format('Y-m-d_His') . '.pdf');
     }
 }
