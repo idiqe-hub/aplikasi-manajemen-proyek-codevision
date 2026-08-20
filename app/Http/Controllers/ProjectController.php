@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ProjectController extends Controller
 {
@@ -24,15 +25,28 @@ class ProjectController extends Controller
     {
         $validated = $request->validate([
             'client_id'   => ['nullable', 'exists:clients,id'],
-            'name'        => ['required','string','max:255'],
-            'client_name' => ['nullable','string','max:255'],
-            'start_date'  => ['nullable','date'],
-            'end_date'    => ['nullable','date','after_or_equal:start_date'],
-            'status'      => ['required','in:planned,on_progress,completed'],
-            'description' => ['nullable','string'],
+            'name'        => ['required', 'string', 'max:255'],
+            'client_name' => ['nullable', 'string', 'max:255'],
+            'start_date'  => ['nullable', 'date'],
+            'end_date'    => ['nullable', 'date', 'after_or_equal:start_date'],
+            'status'      => ['required', 'in:planned,on_progress,completed'],
+            'description' => ['nullable', 'string'],
         ]);
 
         Project::create($validated);
+
+        // Invalidate cache laporan yang bergantung pada data project
+        Cache::forget('dashboard_stats');
+        Cache::forget('report_task_distribution');
+
+        // ─── AJAX / Fetch API: kembalikan JSON jika diminta ───
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success'  => true,
+                'message'  => 'Project berhasil ditambahkan.',
+                'redirect' => route('projects.index'),
+            ]);
+        }
 
         return redirect()
             ->route('projects.index')
@@ -54,15 +68,28 @@ class ProjectController extends Controller
     {
         $validated = $request->validate([
             'client_id'   => ['nullable', 'exists:clients,id'],
-            'name'        => ['required','string','max:255'],
-            'client_name' => ['nullable','string','max:255'],
-            'start_date'  => ['nullable','date'],
-            'end_date'    => ['nullable','date','after_or_equal:start_date'],
-            'status'      => ['required','in:planned,on_progress,completed'],
-            'description' => ['nullable','string'],
+            'name'        => ['required', 'string', 'max:255'],
+            'client_name' => ['nullable', 'string', 'max:255'],
+            'start_date'  => ['nullable', 'date'],
+            'end_date'    => ['nullable', 'date', 'after_or_equal:start_date'],
+            'status'      => ['required', 'in:planned,on_progress,completed'],
+            'description' => ['nullable', 'string'],
         ]);
 
         $project->update($validated);
+
+        // Invalidate cache
+        Cache::forget('dashboard_stats');
+        Cache::forget('report_task_distribution');
+
+        // ─── AJAX / Fetch API: kembalikan JSON jika diminta ───
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success'  => true,
+                'message'  => 'Project berhasil diupdate.',
+                'redirect' => route('projects.index'),
+            ]);
+        }
 
         return redirect()
             ->route('projects.index')
@@ -73,9 +100,12 @@ class ProjectController extends Controller
     {
         $project->delete();
 
+        // Invalidate cache
+        Cache::forget('dashboard_stats');
+        Cache::forget('report_task_distribution');
+
         return redirect()
             ->route('projects.index')
             ->with('success', 'Project berhasil dihapus.');
     }
 }
-    

@@ -62,9 +62,9 @@ class TaskController extends Controller
 
         // Kelompokkan berdasarkan status
         $kanban = [
-            'todo' => $tasks->where('status', 'todo'),
+            'todo'        => $tasks->where('status', 'todo'),
             'in_progress' => $tasks->where('status', 'in_progress'),
-            'done' => $tasks->where('status', 'done'),
+            'done'        => $tasks->where('status', 'done'),
         ];
 
         return view('tasks.kanban', compact('kanban'));
@@ -93,7 +93,7 @@ class TaskController extends Controller
         }
 
         $task->update([
-            'status' => $newStatus,
+            'status'   => $newStatus,
             'progress' => $newProgress,
         ]);
 
@@ -109,7 +109,7 @@ class TaskController extends Controller
         ]);
 
         return response()->json([
-            'success' => true,
+            'success'      => true,
             'new_progress' => $newProgress
         ]);
     }
@@ -131,12 +131,12 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'project_id' => ['required', 'exists:projects,id'],
-            'title' => ['required', 'string', 'max:255'],
+            'project_id'  => ['required', 'exists:projects,id'],
+            'title'       => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'deadline' => ['nullable', 'date'],
-            'status' => ['required'],
-            'developer_id' => ['nullable'], 
+            'deadline'    => ['nullable', 'date'],
+            'status'      => ['required'],
+            'developer_id' => ['nullable'],
         ]);
 
 
@@ -148,15 +148,25 @@ class TaskController extends Controller
             }
 
             $data['developer_id'] = $developer->id;
-        }
-
-        else {
+        } else {
             $request->validate([
                 'developer_id' => ['required', 'exists:developers,id'],
             ]);
         }
 
         Task::create($data);
+
+        // Invalidate dashboard cache agar data fresh
+        \Illuminate\Support\Facades\Cache::forget('dashboard_stats');
+
+        // ─── AJAX / Fetch API: kembalikan JSON jika diminta ───
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success'  => true,
+                'message'  => 'Task berhasil ditambahkan.',
+                'redirect' => route('tasks.index'),
+            ]);
+        }
 
         return redirect()->route('tasks.index')
             ->with('success', 'Task berhasil ditambahkan.');
@@ -170,13 +180,13 @@ class TaskController extends Controller
         $task->load([
             'activityLogs' => function ($query) {
                 $query->latest();
-            }, 
-            'activityLogs.user', 
+            },
+            'activityLogs.user',
             'comments' => function ($query) {
                 $query->oldest(); // kronologis dari lama ke baru
-            }, 
-            'comments.user', 
-            'project', 
+            },
+            'comments.user',
+            'project',
             'developer'
         ]);
 
@@ -205,33 +215,33 @@ class TaskController extends Controller
 
         if ($user->role === 'admin') {
             $data = $request->validate([
-                'project_id'       => ['required', 'exists:projects,id'],
-                'developer_id'     => ['required', 'exists:developers,id'],
-                'title'            => ['required', 'string', 'max:255'],
-                'description'      => ['nullable', 'string'],
-                'deadline'         => ['nullable', 'date'],
-                'status'           => ['required', 'in:todo,in_progress,done'],
-                'progress'         => ['required', 'integer', 'min:0', 'max:100'],
-                'estimated_hours'  => ['nullable', 'numeric', 'min:0'],
-                'actual_hours'     => ['nullable', 'numeric', 'min:0'],
+                'project_id'      => ['required', 'exists:projects,id'],
+                'developer_id'    => ['required', 'exists:developers,id'],
+                'title'           => ['required', 'string', 'max:255'],
+                'description'     => ['nullable', 'string'],
+                'deadline'        => ['nullable', 'date'],
+                'status'          => ['required', 'in:todo,in_progress,done'],
+                'progress'        => ['required', 'integer', 'min:0', 'max:100'],
+                'estimated_hours' => ['nullable', 'numeric', 'min:0'],
+                'actual_hours'    => ['nullable', 'numeric', 'min:0'],
             ]);
         } else {
 
             $data = $request->validate([
-                'description'      => ['nullable', 'string'],
-                'deadline'         => ['nullable', 'date'],
-                'status'           => ['required', 'in:todo,in_progress,done'],
-                'progress'         => ['required', 'integer', 'min:0', 'max:100'],
-                'actual_hours'     => ['nullable', 'numeric', 'min:0'],
+                'description'  => ['nullable', 'string'],
+                'deadline'     => ['nullable', 'date'],
+                'status'       => ['required', 'in:todo,in_progress,done'],
+                'progress'     => ['required', 'integer', 'min:0', 'max:100'],
+                'actual_hours' => ['nullable', 'numeric', 'min:0'],
             ]);
 
-            $data['developer_id'] = $task->developer_id;
-            $data['project_id']   = $task->project_id;
-            $data['title']        = $task->title;
+            $data['developer_id']    = $task->developer_id;
+            $data['project_id']      = $task->project_id;
+            $data['title']           = $task->title;
             $data['estimated_hours'] = $task->estimated_hours;
         }
 
-        $oldStatus = $task->status;
+        $oldStatus   = $task->status;
         $oldProgress = $task->progress;
 
         $task->update($data);
@@ -249,6 +259,18 @@ class TaskController extends Controller
             ]);
         }
 
+        // Invalidate dashboard cache agar data fresh
+        \Illuminate\Support\Facades\Cache::forget('dashboard_stats');
+
+        // ─── AJAX / Fetch API: kembalikan JSON jika diminta ───
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success'  => true,
+                'message'  => 'Task berhasil diperbarui.',
+                'redirect' => route('tasks.index'),
+            ]);
+        }
+
         return redirect()->route('tasks.index')
             ->with('success', 'Task berhasil diperbarui.');
     }
@@ -260,6 +282,9 @@ class TaskController extends Controller
         $this->authorizeDeveloper($task);
 
         $task->delete();
+
+        // Invalidate dashboard cache agar data fresh
+        \Illuminate\Support\Facades\Cache::forget('dashboard_stats');
 
         return redirect()->route('tasks.index')
             ->with('success', 'Task berhasil dihapus.');

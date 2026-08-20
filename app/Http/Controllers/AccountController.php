@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule;
 
 class AccountController extends Controller
 {
@@ -12,6 +13,47 @@ class AccountController extends Controller
     {
         $user = auth()->user();
         return view('account.profile', compact('user'));
+    }
+
+    public function editEmail()
+    {
+        // Hanya admin yang boleh mengubah email
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+        $user = auth()->user();
+        return view('account.email', compact('user'));
+    }
+
+    public function updateEmail(Request $request)
+    {
+        // Hanya admin yang boleh mengubah email
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        $user = auth()->user();
+
+        $request->validate([
+            'email'            => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+            'current_password' => ['required'],
+        ]);
+
+        // Verifikasi password sebelum mengubah email
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors([
+                'current_password' => 'Password tidak sesuai.',
+            ])->withInput();
+        }
+
+        $user->update(['email' => $request->email]);
+
+        return back()->with('success', 'Email berhasil diubah menjadi ' . $request->email . '.');
     }
 
     public function editPassword()

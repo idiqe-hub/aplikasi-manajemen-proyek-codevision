@@ -12,6 +12,92 @@
     <link href="{{ asset('sbadmin2/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('sbadmin2/css/custom.css') }}" rel="stylesheet">
 
+    {{-- ── CSS Transition & Animation Global ── --}}
+    <style>
+        /* ── Smooth sidebar link transition ── */
+        .sidebar-solid .nav-item .nav-link {
+            transition: background 0.18s ease, color 0.18s ease !important;
+        }
+
+        /* ── Card hover shadow elevation ── */
+        .card {
+            transition: box-shadow 0.22s ease;
+        }
+        .card:hover {
+            box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.12) !important;
+        }
+
+        /* ── Modal fade + slight scale (Bootstrap 4 compatible) ── */
+        .modal.fade .modal-dialog {
+            transform: scale(0.96) translateY(-8px);
+            transition: transform 0.22s cubic-bezier(.4,0,.2,1), opacity 0.22s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+        }
+
+        /* ── Global Toast Container ── */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .cv-toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 280px;
+            max-width: 380px;
+            padding: 14px 18px;
+            border-radius: 8px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+            font-size: 0.88rem;
+            font-weight: 500;
+            pointer-events: all;
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.28s ease, transform 0.28s cubic-bezier(.4,0,.2,1);
+            color: #fff;
+        }
+        .cv-toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .cv-toast.cv-toast-success { background: #1cc88a; }
+        .cv-toast.cv-toast-error   { background: #e74a3b; }
+        .cv-toast.cv-toast-info    { background: #36b9cc; }
+        .cv-toast.cv-toast-warning { background: #f6c23e; color: #333; }
+        .cv-toast .cv-toast-icon   { font-size: 1.1rem; flex-shrink: 0; }
+        .cv-toast .cv-toast-close  {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            opacity: 0.8;
+            padding: 0;
+            line-height: 1;
+        }
+
+        /* ── Page loading bar ── */
+        #cv-page-loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #4e73df, #36b9cc);
+            z-index: 99999;
+            transition: width 0.3s ease;
+            border-radius: 0 2px 2px 0;
+        }
+    </style>
+
     {{-- Wireframe Mode CSS (dimuat selalu; aktif hanya jika body punya class wireframe-mode) --}}
     <link href="{{ asset('sbadmin2/css/wireframe.css') }}" rel="stylesheet" id="wireframeCss">
 
@@ -284,6 +370,13 @@
                                     Ganti Password
                                 </a>
 
+                                @if(auth()->user()->role === 'admin')
+                                <a class="dropdown-item" href="{{ route('account.email.edit') }}">
+                                    <i class="fas fa-envelope fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Ubah Email
+                                </a>
+                                @endif
+
                                 <div class="dropdown-divider"></div>
 
                                 {{-- Logout harus POST --}}
@@ -303,10 +396,6 @@
                 {{-- End Topbar --}}
 
                 <div class="container-fluid">
-
-                    @if (session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
 
                     @if ($errors->any())
                         <div class="alert alert-danger">
@@ -339,6 +428,12 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
+    {{-- ── Toast Container ── --}}
+    <div id="toast-container"></div>
+
+    {{-- ── Page loading bar ── --}}
+    <div id="cv-page-loader"></div>
+
     {{-- SB Admin 2 JS --}}
     <script src="{{ asset('sbadmin2/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('sbadmin2/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -347,6 +442,85 @@
 
     {{-- Stack untuk scripts tambahan dari halaman child (misal: Kanban SortableJS) --}}
     @stack('scripts')
+
+    {{-- ══════════════════════════════════════════════════
+         GLOBAL TOAST NOTIFICATION SYSTEM
+         Panggil: window.showToast('Pesan', 'success|error|info|warning')
+         ═══════════════════════════════════════════════ --}}
+    <script>
+    (function () {
+        'use strict';
+
+        var iconMap = {
+            success : 'fa-check-circle',
+            error   : 'fa-times-circle',
+            info    : 'fa-info-circle',
+            warning : 'fa-exclamation-triangle'
+        };
+
+        window.showToast = function (message, type) {
+            type = type || 'success';
+            var container = document.getElementById('toast-container');
+            if (!container) return;
+
+            var toast = document.createElement('div');
+            toast.className = 'cv-toast cv-toast-' + type;
+            toast.innerHTML =
+                '<i class="fas ' + (iconMap[type] || 'fa-info-circle') + ' cv-toast-icon"></i>' +
+                '<span>' + message + '</span>' +
+                '<button class="cv-toast-close" onclick="this.closest(\'.cv-toast\').remove()" title="Tutup">&#x2715;</button>';
+
+            container.appendChild(toast);
+
+            // Trigger masuk (delay kecil agar transition jalan)
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    toast.classList.add('show');
+                });
+            });
+
+            // Auto dismiss setelah 4 detik
+            setTimeout(function () {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(30px)';
+                setTimeout(function () {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
+                }, 300);
+            }, 4000);
+        };
+
+        // ── Page loader bar: aktif saat navigasi link biasa ──
+        var loader = document.getElementById('cv-page-loader');
+        if (loader) {
+            document.addEventListener('click', function (e) {
+                var link = e.target.closest('a[href]');
+                if (!link) return;
+                var href = link.getAttribute('href');
+                // Abaikan: anchor, javascript:, target=_blank, tombol AJAX
+                if (!href || href.startsWith('#') || href.startsWith('javascript') ||
+                    link.target === '_blank' || link.dataset.noLoader) return;
+                loader.style.width = '70%';
+            });
+            window.addEventListener('pageshow', function () {
+                loader.style.width = '0%';
+            });
+        }
+
+        // ── Auto-trigger Toast dari session flash (injected via Blade) ──
+        @if(session('success'))
+            document.addEventListener('DOMContentLoaded', function () {
+                window.showToast({{ Js::from(session('success')) }}, 'success');
+            });
+        @endif
+
+        @if(session('error'))
+            document.addEventListener('DOMContentLoaded', function () {
+                window.showToast({{ Js::from(session('error')) }}, 'error');
+            });
+        @endif
+
+    }());
+    </script>
 
     {{-- ═══════════════════════════════════════════════
          WIREFRAME MODE — Toggle Script

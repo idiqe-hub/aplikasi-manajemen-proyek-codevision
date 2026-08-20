@@ -105,6 +105,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/account/password', [AccountController::class, 'editPassword'])->name('account.password.edit');
     Route::put('/account/password', [AccountController::class, 'updatePassword'])->name('account.password.update');
+
+    // Ubah Email (Admin only)
+    Route::get('/account/email', [AccountController::class, 'editEmail'])->name('account.email.edit');
+    Route::put('/account/email', [AccountController::class, 'updateEmail'])->name('account.email.update');
 });
 
 require __DIR__ . '/auth.php';

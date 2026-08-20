@@ -88,6 +88,21 @@
 @push('scripts')
 {{-- SortableJS dimuat SETELAH SB Admin 2, di luar DOMContentLoaded karena defer --}}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
+<style>
+    /* Visual feedback saat drag berlangsung */
+    .kanban-card-dragging {
+        opacity: 0.45 !important;
+        transform: rotate(1.5deg) scale(1.02);
+        transition: opacity 0.15s ease, transform 0.15s ease;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.18) !important;
+    }
+    .kanban-column.drag-over {
+        background-color: rgba(78, 115, 223, 0.07) !important;
+        border: 2px dashed #4e73df;
+        border-radius: 6px;
+        transition: background 0.18s ease;
+    }
+</style>
 <script>
 (function () {
     'use strict';
@@ -103,7 +118,13 @@
             animation: 200,
             ghostClass: 'opacity-50',
             dragClass: 'shadow',
+            onStart: function (evt) {
+                // Visual feedback: card yang di-drag
+                evt.item.classList.add('kanban-card-dragging');
+            },
             onEnd: function (evt) {
+                evt.item.classList.remove('kanban-card-dragging');
+
                 var itemEl   = evt.item;                          // Card yang di-drag
                 var taskId   = itemEl.getAttribute('data-task-id');
                 var newStatus = evt.to.getAttribute('data-status');
@@ -154,17 +175,22 @@
                 // Update badge counter jumlah task per kolom
                 updateCounters();
 
-                console.log('[Kanban] Task ' + taskId + ' moved from ' + oldStatus + ' to ' + newStatus);
+                // Toast sukses — pengganti console.log & alert
+                var statusLabels = { todo: 'Belum Dikerjakan', in_progress: 'Sedang Dikerjakan', done: 'Selesai' };
+                window.showToast(
+                    'Task dipindahkan ke “' + (statusLabels[newStatus] || newStatus) + '”',
+                    'success'
+                );
             } else {
                 // Kembalikan card ke posisi semula
                 revertCard(element, oldStatus, evt);
-                alert('Gagal memindahkan task. Silakan refresh halaman.');
+                window.showToast('Gagal memindahkan task. Silakan refresh halaman.', 'error');
             }
         })
         .catch(function (error) {
             console.error('[Kanban] Fetch error:', error);
             revertCard(element, oldStatus, evt);
-            alert('Terjadi kesalahan jaringan. Task dikembalikan ke posisi semula.');
+            window.showToast('Terjadi kesalahan jaringan. Task dikembalikan ke posisi semula.', 'error');
         });
     }
 
