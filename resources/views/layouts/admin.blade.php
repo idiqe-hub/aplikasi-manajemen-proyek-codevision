@@ -234,14 +234,7 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    {{-- Wireframe Mode Toggle --}}
-                    <button id="wireframeToggle"
-                        class="btn btn-sm btn-outline-secondary d-none d-sm-inline-flex align-items-center mr-2"
-                        title="Toggle Wireframe Mode"
-                        style="border:1.5px solid #bbb; border-radius:4px; padding:3px 10px; gap:5px;">
-                        <i class="fas fa-drafting-compass fa-sm mr-1"></i>
-                        <span id="wireframeLabel">Wireframe</span>
-                    </button>
+
 
                     <div class="d-none d-sm-inline-block font-weight-bold text-gray-700">
                         @yield('page_title', 'Dashboard')

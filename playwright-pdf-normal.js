@@ -18,19 +18,19 @@ const __dirname  = path.dirname(__filename);
 const BASE_URL    = 'http://localhost/aplikasi-manajemen-proyek-codevision/public';
 const ADMIN_EMAIL = 'admin@codevision.test';
 const ADMIN_PASS  = 'password123';
-const OUTPUT_DIR  = path.join(__dirname, 'Screenshots', 'wireframe');
+const OUTPUT_DIR  = path.join(__dirname, 'Screenshots', 'normal');
 
 // Daftar 9 halaman laporan PDF
 const PAGES = [
-  { name: '15_pdf_proyek_aktif',            url: '/reports/projects-active/pdf?wireframe=1' },
-  { name: '16_pdf_tugas_per_developer',     url: '/reports/tasks-by-developer/pdf?wireframe=1' },
-  { name: '17_pdf_tugas_terlambat',         url: '/reports/tasks-overdue/pdf?wireframe=1' },
-  { name: '18_pdf_progres_proyek',          url: '/reports/project-progress/pdf?wireframe=1' },
-  { name: '19_pdf_estimasi_vs_realisasi_jam', url: '/reports/hours-summary/pdf?wireframe=1' },
-  { name: '20_pdf_beban_kerja',             url: '/reports/workload/pdf?wireframe=1' },
-  { name: '21_pdf_efisiensi_waktu',         url: '/reports/time-efficiency/pdf?wireframe=1' },
-  { name: '22_pdf_distribusi_tugas',        url: '/reports/task-distribution/pdf?wireframe=1' },
-  { name: '23_pdf_produktivitas_mingguan',  url: '/reports/weekly-productivity/pdf?wireframe=1' },
+  { name: '15_pdf_proyek_aktif',            url: '/reports/projects-active/pdf?html_preview=1' },
+  { name: '16_pdf_tugas_per_developer',     url: '/reports/tasks-by-developer/pdf?html_preview=1' },
+  { name: '17_pdf_tugas_terlambat',         url: '/reports/tasks-overdue/pdf?html_preview=1' },
+  { name: '18_pdf_progres_proyek',          url: '/reports/project-progress/pdf?html_preview=1' },
+  { name: '19_pdf_estimasi_vs_realisasi_jam', url: '/reports/hours-summary/pdf?html_preview=1' },
+  { name: '20_pdf_beban_kerja',             url: '/reports/workload/pdf?html_preview=1' },
+  { name: '21_pdf_efisiensi_waktu',         url: '/reports/time-efficiency/pdf?html_preview=1' },
+  { name: '22_pdf_distribusi_tugas',        url: '/reports/task-distribution/pdf?html_preview=1' },
+  { name: '23_pdf_produktivitas_mingguan',  url: '/reports/weekly-productivity/pdf?html_preview=1' },
 ];
 
 function ensureDir(dir) {

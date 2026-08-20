@@ -22,7 +22,7 @@ const __dirname  = path.dirname(__filename);
 const BASE_URL    = 'http://localhost/aplikasi-manajemen-proyek-codevision/public';
 const ADMIN_EMAIL = 'admin@codevision.test';
 const ADMIN_PASS  = 'password123';
-const OUTPUT_DIR  = path.join(__dirname, 'Screenshots', 'wireframe');
+const OUTPUT_DIR  = path.join(__dirname, 'Screenshots', 'normal');
 
 // Daftar halaman yang akan di-capture
 const PAGES = [
@@ -117,10 +117,7 @@ function log(msg) {
 
   // ── 2. Aktifkan Wireframe Mode ─────────────────────────────
   log('🎨 Mengaktifkan Wireframe Mode...');
-  await page.evaluate(() => {
-    localStorage.setItem('codevision_wireframe_mode', '1');
-    document.body.classList.add('wireframe-mode');
-  });
+  // normal mode
   await page.waitForTimeout(600);
 
   // Verifikasi wireframe aktif
@@ -152,10 +149,7 @@ function log(msg) {
       // Pastikan wireframe mode aktif
       const hasWireframe = await page.evaluate(() => document.body.classList.contains('wireframe-mode'));
       if (!hasWireframe) {
-        await page.evaluate(() => {
-          localStorage.setItem('codevision_wireframe_mode', '1');
-          document.body.classList.add('wireframe-mode');
-        });
+        // normal mode
         await page.waitForTimeout(400);
       }
 
