@@ -30,7 +30,7 @@ const PAGES = [
   { name: '20_pdf_beban_kerja',             url: '/reports/workload/pdf?html_preview=1' },
   { name: '21_pdf_efisiensi_waktu',         url: '/reports/time-efficiency/pdf?html_preview=1' },
   { name: '22_pdf_distribusi_tugas',        url: '/reports/task-distribution/pdf?html_preview=1' },
-  { name: '23_pdf_produktivitas_mingguan',  url: '/reports/weekly-productivity/pdf?html_preview=1' },
+  { name: '23_pdf_kpi_bulanan',             url: '/kpi/pdf?html_preview=1' },
 ];
 
 function ensureDir(dir) {

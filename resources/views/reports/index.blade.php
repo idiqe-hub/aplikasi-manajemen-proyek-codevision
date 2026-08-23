@@ -257,27 +257,26 @@
       </div>
     </div>
 
-    {{-- CARD: 9 Produktivitas Mingguan Developer --}}
+    {{-- CARD: 9 Laporan KPI Bulanan --}}
     <div class="col-lg-6 mb-4">
-      <div class="card shadow h-100">
+      <div class="card shadow h-100 border-left-success">
         <div class="card-body">
           <div class="d-flex align-items-start justify-content-between">
             <div>
               <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Report 9</div>
-              <h5 class="mb-1 font-weight-bold text-gray-800">Produktivitas Mingguan</h5>
-              <div class="text-muted small">Task selesai per developer (periode)</div>
-              <span class="badge badge-light border mt-2">Dengan filter</span>
+              <h5 class="mb-1 font-weight-bold text-gray-800">Laporan KPI Bulanan</h5>
+              <div class="text-muted small">Rekapitulasi Key Performance Indicator developer</div>
             </div>
             <div class="text-gray-300">
-              <i class="fas fa-calendar-check fa-2x"></i>
+              <i class="fas fa-star fa-2x"></i>
             </div>
           </div>
           <hr class="my-3">
           <div class="d-flex">
-            <a href="{{ route('reports.weekly_productivity') }}" class="btn btn-sm btn-success mr-2">
-              <i class="fas fa-filter"></i> Buka
+            <a href="{{ route('kpi.index') }}" class="btn btn-sm btn-success mr-2">
+              <i class="fas fa-external-link-alt"></i> Buka Modul KPI
             </a>
-            <a href="{{ route('reports.weekly_productivity.pdf', request()->query()) }}" class="btn btn-sm btn-danger">
+            <a href="{{ route('kpi.pdf', request()->query()) }}" class="btn btn-sm btn-danger">
               <i class="fas fa-file-pdf"></i> PDF
             </a>
           </div>

@@ -7,6 +7,7 @@ use App\Models\DeveloperKpi;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class KpiController extends Controller
 {
@@ -155,5 +156,62 @@ class KpiController extends Controller
         }
 
         return compact('labels', 'scores', 'grades');
+    }
+
+    // ─── PDF Report ────────────────────────────────────────────────────────
+    public function pdf(Request $request)
+    {
+        $month = $request->query('month', now()->format('Y-m'));
+
+        $developers = Developer::with([
+            'kpis' => fn($q) => $q->where('period_month', $month),
+            'latestKpi',
+        ])->orderBy('name')->get();
+
+        $kopData = $this->kopData($request, "KPI-$month", "Laporan KPI Developer Bulanan", "Periode: " . \Carbon\Carbon::parse($month)->translatedFormat('F Y'));
+
+        $data = array_merge($kopData, [
+            'developers' => $developers,
+            'month'      => $month,
+        ]);
+
+        $pdf = Pdf::loadView('kpi.pdf', $data)->setPaper('a4', 'landscape');
+
+        if (request()->hasAny(['wireframe', 'html_preview'])) {
+            return view('kpi.pdf', $data);
+        }
+        return $pdf->stream("Laporan_KPI_Developer_{$month}.pdf");
+    }
+
+    private function resolveTz(Request $request): string
+    {
+        $tz = $request->query('tz', config('app.timezone', 'Asia/Jakarta'));
+        return in_array($tz, \DateTimeZone::listIdentifiers(), true)
+            ? $tz
+            : config('app.timezone', 'Asia/Jakarta');
+    }
+
+    private function kopData(Request $request, string $docTitle, string $reportTitle, string $filters = '', string $keterangan = '')
+    {
+        $tz = $this->resolveTz($request);
+        $logoPath = public_path('sbadmin2/img/logo-pkl.png');
+        $logoUri = file_exists($logoPath) ? ('file://' . $logoPath) : null;
+
+        return [
+            'docTitle'       => $docTitle,
+            'reportTitle'    => $reportTitle,
+            'reportSubtitle' => 'Sistem Manajemen Project & Task Developer',
+            'printedAt'      => now()->timezone($tz)->format('d-m-Y H:i'),
+            'filters'        => $filters,
+            'keterangan'     => $keterangan,
+
+            'instansiName'    => 'CV. MAHKOTA BARITO',
+            'instansiTagline' => 'CODEVISION.ID Software House & IT Solutions',
+            'instansiAddress' => 'Jl. Temanggung Silam RT 002 / RW 004 NO 29 Puruk Cahu, Kec. Murung, Kabupaten Murung Raya Kalimantan Tengah 73911',
+            'instansiContact' => 'Email: hello@codevision.id | Web: https://codevision.id',
+            'logoPath'        => file_exists($logoPath) ? $logoPath : null,
+            'logoUri'         => $logoUri,
+            'tz'              => $tz,
+        ];
     }
 }

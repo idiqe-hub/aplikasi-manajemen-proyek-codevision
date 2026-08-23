@@ -95,8 +95,9 @@ Route::middleware(['auth', 'role:admin,developer'])->group(function () {
     // ─── KPI Module (Admin only) ───────────────────────────────────────────────
     Route::prefix('kpi')->name('kpi.')->middleware('role:admin')->group(function () {
         Route::get('/', [KpiController::class, 'index'])->name('index');
-        Route::get('/{developer}', [KpiController::class, 'show'])->name('show');
+        Route::get('/pdf', [KpiController::class, 'pdf'])->name('pdf');
         Route::post('/calculate', [KpiController::class, 'calculate'])->name('calculate');
+        Route::get('/{developer}', [KpiController::class, 'show'])->name('show');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

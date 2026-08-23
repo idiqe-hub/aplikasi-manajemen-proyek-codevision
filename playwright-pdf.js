@@ -17,7 +17,7 @@ const __dirname  = path.dirname(__filename);
 // ── KONFIGURASI ──────────────────────────────────────────────
 const BASE_URL    = 'http://localhost/aplikasi-manajemen-proyek-codevision/public';
 const ADMIN_EMAIL = 'admin@codevision.test';
-const ADMIN_PASS  = 'password123';
+const ADMIN_PASS  = 'password';
 const OUTPUT_DIR  = path.join(__dirname, 'Screenshots', 'wireframe');
 
 // Daftar 9 halaman laporan PDF
@@ -30,7 +30,7 @@ const PAGES = [
   { name: '20_pdf_beban_kerja',             url: '/reports/workload/pdf?wireframe=1' },
   { name: '21_pdf_efisiensi_waktu',         url: '/reports/time-efficiency/pdf?wireframe=1' },
   { name: '22_pdf_distribusi_tugas',        url: '/reports/task-distribution/pdf?wireframe=1' },
-  { name: '23_pdf_produktivitas_mingguan',  url: '/reports/weekly-productivity/pdf?wireframe=1' },
+  { name: '23_pdf_kpi_bulanan',             url: '/kpi/pdf?wireframe=1' },
 ];
 
 function ensureDir(dir) {
