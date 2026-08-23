@@ -21,7 +21,7 @@ const __dirname  = path.dirname(__filename);
 // ── KONFIGURASI ──────────────────────────────────────────────
 const BASE_URL    = 'http://localhost/aplikasi-manajemen-proyek-codevision/public';
 const ADMIN_EMAIL = 'admin@codevision.test';
-const ADMIN_PASS  = 'password123';
+const ADMIN_PASS  = 'password';
 const OUTPUT_DIR  = path.join(__dirname, 'Screenshots', 'normal');
 
 // Daftar halaman yang akan di-capture
@@ -37,6 +37,8 @@ const PAGES = [
   { name: '09_developers',          url: '/developers',            waitFor: 'table, .card' },
   { name: '09b_developers_create',  url: '/developers/create',     waitFor: 'form' },
   { name: '10_developers_capacity', url: '/developers/capacity',   waitFor: '.card' },
+  { name: '10b_kpi_index',          url: '/kpi',                   waitFor: '.card' },
+  { name: '10c_kpi_show',           url: '/kpi/17',                waitFor: '.card' },
   { name: '11_reports',             url: '/reports',               waitFor: '.card' },
   { name: '12_notifications',       url: '/notifications',         waitFor: '.card, li, .alert' },
   { name: '13_account_profile',     url: '/account/profile',       waitFor: 'form, .card' },
@@ -171,43 +173,47 @@ function log(msg) {
     }
   }
 
-  // ── 4. Capture login page dengan wireframe inject ─────────
-  log('📸 Capturing: 00_login (wireframe style)');
+  // ── 4. Capture Developer Dashboard ──────────────────────────
+  log('👨‍💻 Navigasi ke halaman developer...');
   try {
-    // Gunakan fresh context tanpa session cookies agar benar2 di halaman login
-    const freshContext = await browser.newContext({
+    const devContext = await browser.newContext({
       viewport: { width: 1440, height: 900 },
       locale: 'id-ID',
     });
-    const loginPage = await freshContext.newPage();
-    await loginPage.goto(`${BASE_URL}/login`, { waitUntil: 'networkidle' });
-    // Selector spesifik: form login (bukan logout form yang d-none)
-    await loginPage.waitForSelector('form:not(.d-none)', { timeout: 8000 });
+    const devPage = await devContext.newPage();
+    await devPage.goto(`${BASE_URL}/login`, { waitUntil: 'networkidle' });
+    await devPage.fill('input[name="email"]', 'rizhan@codevision.test');
+    await devPage.fill('input[name="password"]', 'password');
+    await devPage.click('button[type="submit"]');
+    await devPage.waitForTimeout(4000);
 
-    await loginPage.addStyleTag({
-      content: `
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
-        * { font-family: 'Caveat', cursive !important; box-shadow: none !important; }
-        body, body.sidebar-solid { background: #f7f6f0 !important; background-image: none !important; }
-        input, .form-control { border: 2px solid #1a1a1a !important; border-radius: 0 !important; background: #faf9f4 !important; }
-        button, .btn, .btn-primary { border: 2px solid #1a1a1a !important; border-radius: 0 !important; background: #e0dfda !important; color: #1a1a1a !important; }
-        .card, .card.o-hidden { background: #faf9f4 !important; border: 2.5px solid #1a1a1a !important; border-radius: 0 !important; box-shadow: none !important; backdrop-filter: none !important; }
-        .input-group-text { background: #e8e7e0 !important; border: 2px solid #1a1a1a !important; border-radius: 0 !important; }
-        a { color: #555 !important; }
-        img { filter: grayscale(100%) !important; opacity: 0.75 !important; }
-      `
-    });
-    await loginPage.waitForTimeout(700);
+    if (devPage.url().includes('/login')) {
+      await devPage.fill('input[name="password"]', 'password');
+      await devPage.keyboard.press('Enter');
+      await devPage.waitForTimeout(4000);
+    }
 
-    const loginPath = path.join(OUTPUT_DIR, '00_login.png');
-    await loginPage.screenshot({ path: loginPath, fullPage: true });
-    const stats = fs.statSync(loginPath);
-    log(`   ✅ 00_login.png (${(stats.size / 1024).toFixed(1)} KB)`);
-    results.push({ name: '00_login', status: 'OK', sizeKB: (stats.size / 1024).toFixed(1) });
-    await freshContext.close();
+    await devPage.goto(`${BASE_URL}/developer/dashboard`, { waitUntil: 'networkidle', timeout: 20000 });
+    
+    // normal mode
+    await devPage.waitForTimeout(600);
+    const hasWireframe = await devPage.evaluate(() => document.body.classList.contains('wireframe-mode'));
+    if (!hasWireframe) {
+      await devPage.waitForTimeout(400);
+    }
+
+    await devPage.evaluate(() => window.scrollTo(0, 0));
+    await devPage.waitForTimeout(700);
+
+    const devPath = path.join(OUTPUT_DIR, '01b_dashboard_developer.png');
+    await devPage.screenshot({ path: devPath, fullPage: true });
+    const statsDev = fs.statSync(devPath);
+    log(`   ✅ 01b_dashboard_developer.png (${(statsDev.size / 1024).toFixed(1)} KB)`);
+    results.push({ name: '01b_dashboard_developer', status: 'OK', sizeKB: (statsDev.size / 1024).toFixed(1) });
+    await devContext.close();
   } catch (err) {
-    log(`   ❌ Gagal capture login: ${err.message}`);
-    results.push({ name: '00_login', status: 'ERROR', error: err.message });
+    log(`   ❌ Gagal capture developer dashboard: ${err.message}`);
+    results.push({ name: '01b_dashboard_developer', status: 'ERROR', error: err.message });
   }
 
   await browser.close();

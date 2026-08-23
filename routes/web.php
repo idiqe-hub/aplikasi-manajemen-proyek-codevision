@@ -13,6 +13,8 @@ use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\DeveloperCapacityController;
 use App\Http\Controllers\TaskCommentController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\KpiController;
+use App\Http\Controllers\DeveloperDashboardController;
 
 
 Route::get('/', function () {
@@ -21,8 +23,9 @@ Route::get('/', function () {
     }
     // Arahkan sesuai role
     return match (auth()->user()->role) {
-        'client' => redirect()->route('client.dashboard'),
-        default  => redirect()->route('dashboard'),
+        'client'    => redirect()->route('client.dashboard'),
+        'developer' => redirect()->route('developer.dashboard'),
+        default     => redirect()->route('dashboard'),
     };
 })->name('home');
 
@@ -78,9 +81,22 @@ Route::middleware(['auth', 'role:admin,developer'])->group(function () {
     Route::middleware('role:admin,developer')->group(function () {
         Route::get('/tasks/kanban', [TaskController::class, 'kanban'])->name('tasks.kanban');
         Route::patch('/tasks/{task}/kanban-status', [TaskController::class, 'updateStatus'])->name('tasks.kanban.status');
-        
+        Route::patch('/tasks/{task}/quick-complete', [TaskController::class, 'quickComplete'])->name('tasks.quick-complete');
+
         Route::resource('tasks', TaskController::class);
         Route::post('/tasks/{task}/comments', [TaskCommentController::class, 'store'])->name('tasks.comments.store');
+    });
+
+    // ─── Developer Personal Dashboard ──────────────────────────────────────────
+    Route::get('/developer/dashboard', [DeveloperDashboardController::class, 'index'])
+         ->name('developer.dashboard')
+         ->middleware('role:developer');
+
+    // ─── KPI Module (Admin only) ───────────────────────────────────────────────
+    Route::prefix('kpi')->name('kpi.')->middleware('role:admin')->group(function () {
+        Route::get('/', [KpiController::class, 'index'])->name('index');
+        Route::get('/{developer}', [KpiController::class, 'show'])->name('show');
+        Route::post('/calculate', [KpiController::class, 'calculate'])->name('calculate');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

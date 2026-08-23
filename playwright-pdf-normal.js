@@ -17,7 +17,7 @@ const __dirname  = path.dirname(__filename);
 // ── KONFIGURASI ──────────────────────────────────────────────
 const BASE_URL    = 'http://localhost/aplikasi-manajemen-proyek-codevision/public';
 const ADMIN_EMAIL = 'admin@codevision.test';
-const ADMIN_PASS  = 'password123';
+const ADMIN_PASS  = 'password';
 const OUTPUT_DIR  = path.join(__dirname, 'Screenshots', 'normal');
 
 // Daftar 9 halaman laporan PDF

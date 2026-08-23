@@ -57,11 +57,12 @@
         })
         .then(function (data) {
             if (data.success) {
-                window.showToast(data.message || 'Task berhasil ditambahkan.', 'success');
-                // Redirect setelah toast muncul
-                setTimeout(function () {
-                    window.location.href = data.redirect || '{{ route('tasks.index') }}';
-                }, 900);
+                // Simpan pesan ke sessionStorage agar tampil di halaman tujuan
+                sessionStorage.setItem('flash_toast', JSON.stringify({
+                    message : data.message || 'Task berhasil ditambahkan.',
+                    type    : 'success'
+                }));
+                window.location.href = data.redirect || '{{ route('tasks.index') }}';
             }
         })
         .catch(function (err) {

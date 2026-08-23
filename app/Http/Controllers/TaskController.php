@@ -6,7 +6,10 @@ use App\Models\Task;
 use App\Models\Project;
 use App\Models\Developer;
 use App\Models\TaskActivityLog;
+use App\Models\User;
+use App\Notifications\TaskOverdueNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
@@ -114,7 +117,43 @@ class TaskController extends Controller
         ]);
     }
 
+    /**
+     * Quick-complete: Tandai task sebagai selesai langsung dari list/tabel (AJAX).
+     * Endpoint: PATCH /tasks/{task}/quick-complete
+     */
+    public function quickComplete(Task $task)
+    {
+        $this->authorizeDeveloper($task);
 
+        if ($task->status === 'done') {
+            return response()->json(['success' => true, 'message' => 'Task sudah selesai.']);
+        }
+
+        $oldStatus   = $task->status;
+        $oldProgress = $task->progress;
+
+        $task->update([
+            'status'   => 'done',
+            'progress' => 100,
+        ]);
+
+        TaskActivityLog::create([
+            'task_id'      => $task->id,
+            'user_id'      => auth()->id(),
+            'old_status'   => $oldStatus,
+            'new_status'   => 'done',
+            'old_progress' => $oldProgress,
+            'new_progress' => 100,
+            'note'         => 'Ditandai selesai via Quick Complete.',
+        ]);
+
+        \Illuminate\Support\Facades\Cache::forget('dashboard_stats');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task berhasil ditandai selesai!',
+        ]);
+    }
 
     public function create()
     {
@@ -127,6 +166,7 @@ class TaskController extends Controller
 
         return view('tasks.create', compact('projects', 'developers'));
     }
+
 
     public function store(Request $request)
     {
@@ -154,7 +194,10 @@ class TaskController extends Controller
             ]);
         }
 
-        Task::create($data);
+        $task = Task::create($data);
+
+        // Kirim notifikasi overdue langsung jika deadline sudah lewat
+        $this->sendOverdueNotifIfNeeded($task);
 
         // Invalidate dashboard cache agar data fresh
         \Illuminate\Support\Facades\Cache::forget('dashboard_stats');
@@ -259,6 +302,9 @@ class TaskController extends Controller
             ]);
         }
 
+        // Kirim notifikasi overdue langsung jika deadline sudah lewat
+        $this->sendOverdueNotifIfNeeded($task);
+
         // Invalidate dashboard cache agar data fresh
         \Illuminate\Support\Facades\Cache::forget('dashboard_stats');
 
@@ -297,6 +343,40 @@ class TaskController extends Controller
 
             if (!$developer || $task->developer_id !== $developer->id) {
                 abort(403);
+            }
+        }
+    }
+
+    /**
+     * Kirim notifikasi overdue ke semua admin secara langsung
+     * jika task memiliki deadline yang sudah lewat dan belum selesai.
+     * Anti-duplikat: tidak mengirim ulang jika sudah pernah dikirim.
+     */
+    private function sendOverdueNotifIfNeeded(Task $task): void
+    {
+        // Hanya kirim jika ada deadline, sudah lewat, dan belum done
+        if (!$task->deadline || $task->status === 'done') {
+            return;
+        }
+
+        $today = now()->toDateString();
+        if ($task->deadline >= $today) {
+            return; // Belum overdue
+        }
+
+        $admins = User::where('role', 'admin')->get();
+
+        foreach ($admins as $admin) {
+            // Cek duplikat: jangan kirim ulang jika sudah ada notifikasi overdue untuk task ini
+            $alreadySent = DB::table('notifications')
+                ->where('notifiable_id', $admin->id)
+                ->where('notifiable_type', 'App\\Models\\User')
+                ->whereJsonContains('data->task_id', $task->id)
+                ->whereJsonContains('data->warning_type', 'overdue')
+                ->exists();
+
+            if (!$alreadySent) {
+                $admin->notify(new TaskOverdueNotification($task));
             }
         }
     }

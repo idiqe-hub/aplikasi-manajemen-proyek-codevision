@@ -208,10 +208,12 @@
             <hr class="sidebar-divider my-0">
 
             {{-- Menu Dashboard --}}
-            <li class="nav-item {{ request()->routeIs('dashboard', 'client.dashboard') ? 'active' : '' }}">
+            <li class="nav-item {{ request()->routeIs('dashboard', 'developer.dashboard', 'client.dashboard') ? 'active' : '' }}">
                 @auth
                     @if(auth()->user()->role === 'client')
                         <a class="nav-link" href="{{ route('client.dashboard') }}">
+                    @elseif(auth()->user()->role === 'developer')
+                        <a class="nav-link" href="{{ route('developer.dashboard') }}">
                     @else
                         <a class="nav-link" href="{{ route('dashboard') }}">
                     @endif
@@ -272,6 +274,13 @@
                         <a class="nav-link" href="{{ route('reports.index') }}">
                             <i class="fas fa-fw fa-chart-bar"></i>
                             <span>Laporan</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ request()->routeIs('kpi.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('kpi.index') }}">
+                            <i class="fas fa-fw fa-star"></i>
+                            <span>KPI & Performa</span>
                         </a>
                     </li>
                 @endif
@@ -518,6 +527,18 @@
                 window.showToast({{ Js::from(session('error')) }}, 'error');
             });
         @endif
+
+        // ── Auto-trigger Toast dari sessionStorage (setelah AJAX redirect) ──
+        document.addEventListener('DOMContentLoaded', function () {
+            var flash = sessionStorage.getItem('flash_toast');
+            if (flash) {
+                try {
+                    var data = JSON.parse(flash);
+                    window.showToast(data.message, data.type || 'success');
+                } catch (e) {}
+                sessionStorage.removeItem('flash_toast');
+            }
+        });
 
     }());
     </script>

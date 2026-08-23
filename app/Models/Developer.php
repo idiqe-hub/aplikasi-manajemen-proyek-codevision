@@ -27,6 +27,16 @@ class Developer extends Model
         return $this->hasMany(Task::class);
     }
 
+    public function kpis()
+    {
+        return $this->hasMany(DeveloperKpi::class)->orderByDesc('period_month');
+    }
+
+    public function latestKpi()
+    {
+        return $this->hasOne(DeveloperKpi::class)->latestOfMany('period_month');
+    }
+
     // ----------------------------------------------------------------
     // Helper Workload — digunakan di capacity page dan form task
     // ----------------------------------------------------------------
